@@ -1,0 +1,56 @@
+.seo-serp-preview {
+    padding-top: 14px;
+}
+
+.seo-serp-preview .preview-header {
+    margin-bottom: 14px;
+}
+
+.seo-serp-preview .preview-header:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.seo-serp-preview .preview-header a {
+    float: left;
+}
+
+.seo-serp-preview .preview-header img {
+    width: 80px;
+    height: auto;
+    vertical-align: middle;
+}
+
+.seo-serp-preview .preview-header span {
+    float: left;
+    margin: 4px 0 0 14px;
+    font-size: 16px;
+    color: #999;
+}
+
+.seo-serp-preview .preview-body {
+    padding: 10px;
+    border: 1px dashed #ddd;
+}
+
+.seo-serp-preview .title {
+    font-size: 18px;
+    font-family: arial, sans-serif;
+    color: #1a0dab;
+    line-height: 1.2;
+}
+
+.seo-serp-preview .url {
+    font-size: 14px;
+    font-family: arial, sans-serif;
+    color: #006621;
+    line-height: 16px;
+}
+
+.seo-serp-preview .description {
+    font-size: 13px;
+    font-family: arial, sans-serif;
+    color: #545454;
+    line-height: 18px;
+}
