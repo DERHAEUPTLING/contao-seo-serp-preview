@@ -27,6 +27,17 @@ SeoSerpPreview.PageEngine = new Class({
     },
 
     /**
+     * Add the description character counter
+     *
+     * @param {object} el
+     *
+     * @return {object}
+     */
+    addDescriptionCounter: function (el) {
+        return el.inject(this.description.getPrevious(), 'bottom');
+    },
+
+    /**
      * Get the title
      *
      * @returns {string}

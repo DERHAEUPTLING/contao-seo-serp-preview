@@ -10,6 +10,8 @@ var SeoSerpPreview = new Class({
         'titleSelector': '[data-ssp-title]',
         'urlSelector': '[data-ssp-url]',
         'descriptionSelector': '[data-ssp-description]',
+        'counterClass': 'seo-serp-preview-counter',
+        'counterLimitClass': 'limit-exceeded',
         'titleLimit': 55,
         'descriptionLimit': 156
     },
@@ -29,6 +31,9 @@ var SeoSerpPreview = new Class({
         // Collect the widget elements
         this.collectElements();
 
+        // Add the description character counter
+        this.addDescriptionCounter();
+
         // Add the event listener
         this.engine.addEvent('change', function () {
             this.refresh.apply(this);
@@ -39,10 +44,36 @@ var SeoSerpPreview = new Class({
     },
 
     /**
+     * Add the description character counter to the fields
+     */
+    addDescriptionCounter: function () {
+        this.descriptionCounter = this.engine.addDescriptionCounter(
+            new Element('span', {'class': this.options.counterClass})
+        );
+    },
+
+    /**
+     * Update the description character counter
+     *
+     * @param {string} text
+     */
+    updateDescriptionCounter: function (text) {
+        this.descriptionCounter.set('text', '(' + text.length + '/' + this.options.descriptionLimit + ')');
+
+        if (text.length > this.options.descriptionLimit) {
+            this.descriptionCounter.addClass(this.options.counterLimitClass);
+        } else {
+            this.descriptionCounter.removeClass(this.options.counterLimitClass);
+        }
+    },
+
+    /**
      * Refresh the preview state
      */
     refresh: function () {
         var data = this.collectData();
+
+        this.updateDescriptionCounter(data.description);
 
         if (!this.validateData(data)) {
             this.hideBody();
