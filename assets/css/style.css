@@ -56,6 +56,10 @@
     line-height: 18px;
 }
 
+.seo-serp-preview .description .sibling {
+    background: #c3ff7f;
+}
+
 /* Character counter next to field */
 .seo-serp-preview-counter {
     margin-left: 5px;

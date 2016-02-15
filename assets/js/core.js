@@ -10,6 +10,7 @@ var SeoSerpPreview = new Class({
         'titleSelector': '[data-ssp-title]',
         'urlSelector': '[data-ssp-url]',
         'descriptionSelector': '[data-ssp-description]',
+        'descriptionSiblingClass': 'sibling',
         'counterClass': 'seo-serp-preview-counter',
         'counterLimitClass': 'limit-exceeded',
         'titleLimit': 55,
@@ -170,7 +171,41 @@ var SeoSerpPreview = new Class({
             value = value.substr(0, this.options.descriptionLimit) + '...';
         }
 
-        this.description.set('text', value);
+        var chunks = value.split(' ');
+        var siblingClass = this.options.descriptionSiblingClass;
+
+        function markSiblings() {
+            var text = this.get('text');
+            var siblings = this.getSiblings();
+
+            for (var j = 0; j < siblings.length; j++) {
+                if (siblings[j].get('text') === text) {
+                    siblings[j].addClass(siblingClass);
+                }
+            }
+
+            this.addClass(siblingClass);
+        }
+
+        function unmarkSiblings() {
+            this.removeClass(siblingClass);
+            this.getSiblings().removeClass(siblingClass);
+        }
+
+        // Empty the description
+        this.description.set('html', '');
+
+        // Generate teh <span> elements
+        for (var i = 0; i < chunks.length; i++) {
+            var span = new Element('span', {'text': chunks[i]});
+            var space = new Element('span', {'text': ' '});
+
+            span.addEvent('mouseenter', markSiblings);
+            span.addEvent('mouseleave', unmarkSiblings);
+
+            span.inject(this.description, 'bottom');
+            space.inject(this.description, 'bottom');
+        }
     },
 
     /**
