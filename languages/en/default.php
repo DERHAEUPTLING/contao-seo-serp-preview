@@ -14,5 +14,5 @@
 /**
  * Miscellaneous
  */
-$GLOBALS['TL_LANG']['MSC']['seo_serp_preview.headline'] = 'SEO SERP Preview';
+$GLOBALS['TL_LANG']['MSC']['seo_serp_preview.headline'] = 'SERP Preview';
 $GLOBALS['TL_LANG']['MSC']['seo_serp_preview.hint']     = 'Start entering the data in your form to enable the SEO SERP preview.';
