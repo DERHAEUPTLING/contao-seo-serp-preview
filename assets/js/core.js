@@ -10,7 +10,7 @@ var SeoSerpPreview = new Class({
         'titleSelector': '[data-ssp-title]',
         'urlSelector': '[data-ssp-url]',
         'descriptionSelector': '[data-ssp-description]',
-        'descriptionSiblingClass': 'sibling',
+        'keywordMarkClass': 'keyword-mark',
         'counterClass': 'seo-serp-preview-counter',
         'counterLimitClass': 'limit-exceeded',
         'titleLimit': 55,
@@ -134,6 +134,8 @@ var SeoSerpPreview = new Class({
      * @param {object} data
      */
     renderData: function (data) {
+        this.textElements = []; // initialize the text elements array
+
         this.setTitle(data.title);
         this.setUrl(data.url);
         this.setDescription(data.description);
@@ -149,7 +151,7 @@ var SeoSerpPreview = new Class({
             value = value.substr(0, this.options.titleLimit) + '...';
         }
 
-        this.title.set('text', value);
+        this.generateTextElements(value, this.title);
     },
 
     /**
@@ -158,7 +160,7 @@ var SeoSerpPreview = new Class({
      * @param {string} value
      */
     setUrl: function (value) {
-        this.url.set('text', value);
+        this.generateTextElements(value, this.url);
     },
 
     /**
@@ -171,40 +173,51 @@ var SeoSerpPreview = new Class({
             value = value.substr(0, this.options.descriptionLimit) + '...';
         }
 
-        var chunks = value.split(' ');
-        var siblingClass = this.options.descriptionSiblingClass;
+        this.generateTextElements(value, this.description);
+    },
+
+    /**
+     * Generate the text elements
+     *
+     * @param {string} text
+     * @param {object} el
+     */
+    generateTextElements: function(text, el) {
+        var chunks = text.split(' ');
+        var self = this;
 
         function markSiblings() {
-            var text = this.get('text');
-            var siblings = this.getSiblings();
-
-            for (var j = 0; j < siblings.length; j++) {
-                if (siblings[j].get('text').toLowerCase() === text.toLowerCase()) {
-                    siblings[j].addClass(siblingClass);
+            for (var i = 0; i < self.textElements.length; i++) {
+                if (self.textElements[i].get('text').toLowerCase() === this.get('text').toLowerCase()) {
+                    self.textElements[i].addClass(self.options.keywordMarkClass);
                 }
             }
-
-            this.addClass(siblingClass);
         }
 
         function unmarkSiblings() {
-            this.removeClass(siblingClass);
-            this.getSiblings().removeClass(siblingClass);
+            for (var i = 0; i < self.textElements.length; i++) {
+                self.textElements[i].removeClass(self.options.keywordMarkClass);
+            }
         }
 
         // Empty the description
-        this.description.set('html', '');
+        el.set('html', '');
 
         // Generate teh <span> elements
         for (var i = 0; i < chunks.length; i++) {
             var span = new Element('span', {'text': chunks[i]});
-            var space = new Element('span', {'text': ' '});
 
             span.addEvent('mouseenter', markSiblings);
             span.addEvent('mouseleave', unmarkSiblings);
+            span.inject(el, 'bottom');
 
-            span.inject(this.description, 'bottom');
-            space.inject(this.description, 'bottom');
+            // Inject the space for all but last text chunk
+            if (i + 1 < chunks.length) {
+                (new Element('span', {'text': ' '})).inject(el, 'bottom');
+            }
+
+            // Add as text element
+            this.textElements.push(span);
         }
     },
 
