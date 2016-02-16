@@ -36,9 +36,7 @@ var SeoSerpPreview = new Class({
         this.addDescriptionCounter();
 
         // Add the event listener
-        this.engine.addEvent('change', function () {
-            this.refresh.apply(this);
-        }.bind(this));
+        this.engine.addEvent('change', this.refresh.bind(this));
 
         // Refresh the preview state
         this.refresh();
@@ -186,20 +184,6 @@ var SeoSerpPreview = new Class({
         var chunks = text.split(' ');
         var self = this;
 
-        function markSiblings() {
-            for (var i = 0; i < self.textElements.length; i++) {
-                if (self.textElements[i].get('text').toLowerCase() === this.get('text').toLowerCase()) {
-                    self.textElements[i].addClass(self.options.keywordMarkClass);
-                }
-            }
-        }
-
-        function unmarkSiblings() {
-            for (var i = 0; i < self.textElements.length; i++) {
-                self.textElements[i].removeClass(self.options.keywordMarkClass);
-            }
-        }
-
         // Empty the description
         el.set('html', '');
 
@@ -207,8 +191,11 @@ var SeoSerpPreview = new Class({
         for (var i = 0; i < chunks.length; i++) {
             var span = new Element('span', {'text': chunks[i]});
 
-            span.addEvent('mouseenter', markSiblings);
-            span.addEvent('mouseleave', unmarkSiblings);
+            span.addEvent('mouseenter', function () {
+                self.markKeywords.call(self, this.get('text'));
+            });
+
+            span.addEvent('mouseleave', this.unmarkKeywords.bind(this));
             span.inject(el, 'bottom');
 
             // Inject the space for all but last text chunk
@@ -218,6 +205,28 @@ var SeoSerpPreview = new Class({
 
             // Add as text element
             this.textElements.push(span);
+        }
+    },
+
+    /**
+     * Mark the keywords
+     *
+     * @param {string} text
+     */
+    markKeywords: function (text) {
+        for (var i = 0; i < this.textElements.length; i++) {
+            if (this.textElements[i].get('text').toLowerCase() === text.toLowerCase()) {
+                this.textElements[i].addClass(this.options.keywordMarkClass);
+            }
+        }
+    },
+
+    /**
+     * Unmark the keywords
+     */
+    unmarkKeywords: function () {
+        for (var i = 0; i < this.textElements.length; i++) {
+            this.textElements[i].removeClass(this.options.keywordMarkClass);
         }
     },
 
