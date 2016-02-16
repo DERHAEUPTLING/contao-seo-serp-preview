@@ -179,7 +179,7 @@ var SeoSerpPreview = new Class({
             var siblings = this.getSiblings();
 
             for (var j = 0; j < siblings.length; j++) {
-                if (siblings[j].get('text') === text) {
+                if (siblings[j].get('text').toLowerCase() === text.toLowerCase()) {
                     siblings[j].addClass(siblingClass);
                 }
             }
