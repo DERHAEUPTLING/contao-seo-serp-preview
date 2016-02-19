@@ -14,7 +14,8 @@ var SeoSerpPreview = new Class({
         'counterClass': 'seo-serp-preview-counter',
         'counterLimitClass': 'limit-exceeded',
         'titleLimit': 55,
-        'descriptionLimit': 156
+        'descriptionLimit': 156,
+        'keywordCharacterLength': 4
     },
 
     /**
@@ -183,11 +184,12 @@ var SeoSerpPreview = new Class({
     generateTextElements: function(text, el) {
         var chunks = text.split(' ');
         var self = this;
+        var rgxp = new RegExp(/\,|\.|\!|\?|\-$/);
 
         // Empty the description
         el.set('html', '');
 
-        // Generate teh <span> elements
+        // Generate the <span> elements
         for (var i = 0; i < chunks.length; i++) {
             var span = new Element('span', {'text': chunks[i]});
 
@@ -197,6 +199,12 @@ var SeoSerpPreview = new Class({
 
             span.addEvent('mouseleave', this.unmarkKeywords.bind(this));
             span.inject(el, 'bottom');
+
+            // Take out the punctuation character from the text and insert it as individual node
+            if (rgxp.test(chunks[i])) {
+                span.set('text', chunks[i].substr(0, chunks[i].length - 1));
+                (new Element('span', {'text': chunks[i].substr(-1)})).inject(el, 'bottom');
+            }
 
             // Inject the space for all but last text chunk
             if (i + 1 < chunks.length) {
@@ -214,9 +222,36 @@ var SeoSerpPreview = new Class({
      * @param {string} text
      */
     markKeywords: function (text) {
-        for (var i = 0; i < this.textElements.length; i++) {
-            if (this.textElements[i].get('text').toLowerCase() === text.toLowerCase()) {
-                this.textElements[i].addClass(this.options.keywordMarkClass);
+        var i = 0;
+
+        // Lowercase the text
+        text = text.toLowerCase();
+
+        // Create the multiple variations if the highlighted text is longer than the keyword character length
+        if (text.length >= this.options.keywordCharacterLength) {
+            var variations = [];
+
+            // Generate variations
+            for (i = 0; i <= (text.length - this.options.keywordCharacterLength); i++) {
+                variations.push(text.substr(i, this.options.keywordCharacterLength));
+            }
+
+            for (i = 0; i < this.textElements.length; i++) {
+                var elText = this.textElements[i].get('text').toLowerCase();
+
+                for (var j = 0; j < variations.length; j++) {
+                    // Highlight the word if it only contains the variation
+                    if (elText.indexOf(variations[j]) !== -1) {
+                        this.textElements[i].addClass(this.options.keywordMarkClass);
+                    }
+                }
+            }
+        } else {
+            // If the word is not longer than character limit do not create multiple variations
+            for (i = 0; i < this.textElements.length; i++) {
+                if (this.textElements[i].get('text').toLowerCase() === text) {
+                    this.textElements[i].addClass(this.options.keywordMarkClass);
+                }
             }
         }
     },
