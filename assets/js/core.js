@@ -182,47 +182,67 @@ var SeoSerpPreview = new Class({
      * @param {object} el
      */
     generateTextElements: function(text, el) {
-        var chunks = text.split(' ');
-        var self = this;
-        var rgxp = new RegExp(/\,|\.|\!|\?|\-$/);
+        var rgxp = new RegExp(/\,|\.|\;|\!|\?|\-|\s|\\|\//);
+        var word = [];
 
         // Empty the description
         el.set('html', '');
 
-        // Generate the <span> elements
-        for (var i = 0; i < chunks.length; i++) {
-            var span = new Element('span', {'text': chunks[i]});
+        // Generate the text with DOM elements
+        for (var i = 0; i < text.length; i++) {
+            if (rgxp.test(text[i])) {
+                // Create the word
+                if (word.length > 0) {
+                    this.createTextElement(word.join(''), el);
 
-            span.addEvent('mouseenter', function () {
-                self.markKeywords.call(self, this.get('text'));
-            });
+                    // Reset the word
+                    word = [];
+                }
 
-            span.addEvent('mouseleave', this.unmarkKeywords.bind(this));
-            span.inject(el, 'bottom');
+                (new Element('span', {'text': text[i]})).inject(el, 'bottom');
 
-            // Take out the punctuation character from the text and insert it as individual node
-            if (rgxp.test(chunks[i])) {
-                span.set('text', chunks[i].substr(0, chunks[i].length - 1));
-                (new Element('span', {'text': chunks[i].substr(-1)})).inject(el, 'bottom');
+                continue;
             }
 
-            // Inject the space for all but last text chunk
-            if (i + 1 < chunks.length) {
-                (new Element('span', {'text': ' '})).inject(el, 'bottom');
-            }
-
-            // Add as text element
-            this.textElements.push(span);
+            word.push(text[i]);
         }
+
+        // Create the last word if present
+        if (word.length > 0) {
+            this.createTextElement(word.join(''), el);
+        }
+    },
+
+    /**
+     * Create the text element
+     *
+     * @param {string} text
+     * @param {object} el
+     */
+    createTextElement: function(text, el) {
+        var self = this;
+        var span = new Element('span', {'text': text});
+
+        span.addEvent('mouseenter', function () {
+            self.markKeywords.call(self, this.get('text'), this);
+        });
+
+        span.addEvent('mouseleave', this.unmarkKeywords.bind(this));
+        span.inject(el, 'bottom');
+
+        // Add as text element
+        this.textElements.push(span);
     },
 
     /**
      * Mark the keywords
      *
      * @param {string} text
+     * @param {object} origin
      */
-    markKeywords: function (text) {
+    markKeywords: function (text, origin) {
         var i = 0;
+        var els = [];
 
         // Lowercase the text
         text = text.toLowerCase();
@@ -239,10 +259,16 @@ var SeoSerpPreview = new Class({
             for (i = 0; i < this.textElements.length; i++) {
                 var elText = this.textElements[i].get('text').toLowerCase();
 
+                // Do not look for variations in origin element
+                if (origin && this.textElements[i] === origin) {
+                    els.push(origin);
+                    continue;
+                }
+
                 for (var j = 0; j < variations.length; j++) {
                     // Highlight the word if it only contains the variation
                     if (elText.indexOf(variations[j]) !== -1) {
-                        this.textElements[i].addClass(this.options.keywordMarkClass);
+                        els.push(this.textElements[i]);
                     }
                 }
             }
@@ -250,8 +276,15 @@ var SeoSerpPreview = new Class({
             // If the word is not longer than character limit do not create multiple variations
             for (i = 0; i < this.textElements.length; i++) {
                 if (this.textElements[i].get('text').toLowerCase() === text) {
-                    this.textElements[i].addClass(this.options.keywordMarkClass);
+                    els.push(this.textElements[i]);
                 }
+            }
+        }
+
+        // Highlight words if there is more than one element
+        if (els.length > 1) {
+            for (i = 0; i < els.length; i++) {
+                els[i].addClass(this.options.keywordMarkClass);
             }
         }
     },
