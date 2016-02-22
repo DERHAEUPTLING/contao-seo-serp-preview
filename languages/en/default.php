@@ -16,3 +16,10 @@
  */
 $GLOBALS['TL_LANG']['MSC']['seo_serp_preview.headline'] = 'SERP Preview';
 $GLOBALS['TL_LANG']['MSC']['seo_serp_preview.hint']     = 'Start entering the data in your form to enable the SEO SERP preview.';
+
+/**
+ * Back end tests module
+ */
+$GLOBALS['TL_LANG']['MSC']['seo_serp_preview_tests.headline'] = 'SERP Tests';
+$GLOBALS['TL_LANG']['MSC']['seo_serp_preview_tests.empty']    = 'There are no pages to be checked.';
+$GLOBALS['TL_LANG']['MSC']['seo_serp_preview_tests.edit']     = 'Edit page';
