@@ -44,6 +44,8 @@ var SeoSerpPreview = new Class({
             // Refresh the preview state
             this.refresh();
         }.bind(this));
+
+        this.engine.init();
     },
 
     /**

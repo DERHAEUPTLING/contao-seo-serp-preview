@@ -4,7 +4,7 @@ SeoSerpPreview.EventsEngine = new Class({
     /**
      * Initialize the engine
      */
-    initialize: function () {
+    init: function () {
         this.title = document.id('ctrl_title');
         this.alias = document.id('ctrl_alias');
 

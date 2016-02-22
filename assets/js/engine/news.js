@@ -4,7 +4,7 @@ SeoSerpPreview.NewsEngine = new Class({
     /**
      * Initialize the engine
      */
-    initialize: function () {
+    init: function () {
         this.title = document.id('ctrl_headline');
         this.alias = document.id('ctrl_alias');
 

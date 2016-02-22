@@ -4,7 +4,7 @@ SeoSerpPreview.PageEngine = new Class({
     /**
      * Initialize the engine
      */
-    initialize: function () {
+    init: function () {
         this.title = document.id('ctrl_title');
         this.pageTitle = document.id('ctrl_pageTitle');
         this.alias = document.id('ctrl_alias');
