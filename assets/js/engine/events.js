@@ -8,8 +8,21 @@ SeoSerpPreview.EventsEngine = new Class({
         this.title = document.id('ctrl_title');
         this.alias = document.id('ctrl_alias');
 
-        // @todo - find a better way to detect tinyMCE initialization than setTimeout()
-        setTimeout(function () {
+        var attempts = 20;
+
+        var interval = setInterval(function () {
+            if (!tinyMCE.hasOwnProperty('editors')) {
+                // Resign after the attempts limit is reached
+                if (attempts-- <= 1) {
+                    console.error('Unable to determine the tinyMCE instance for SEO SERP Preview extension.');
+                    clearInterval(interval);
+                }
+
+                return;
+            }
+
+            clearInterval(interval);
+
             this.description = {
                 'textarea': document.id('ctrl_teaser'),
                 'tinymce': tinyMCE.get('ctrl_teaser')
@@ -17,7 +30,7 @@ SeoSerpPreview.EventsEngine = new Class({
 
             this.addEventListeners();
             this.fireEvent('ready');
-        }.bind(this), 1000);
+        }.bind(this), 500);
     },
 
     /**
