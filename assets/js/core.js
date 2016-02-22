@@ -33,14 +33,17 @@ var SeoSerpPreview = new Class({
         // Collect the widget elements
         this.collectElements();
 
-        // Add the description character counter
-        this.addDescriptionCounter();
+        // Wait until the engine is ready
+        this.engine.addEvent('ready', function (){
+            // Add the description character counter
+            this.addDescriptionCounter();
 
-        // Add the event listener
-        this.engine.addEvent('change', this.refresh.bind(this));
+            // Add the event listener
+            this.engine.addEvent('change', this.refresh.bind(this));
 
-        // Refresh the preview state
-        this.refresh();
+            // Refresh the preview state
+            this.refresh();
+        }.bind(this));
     },
 
     /**

@@ -1,30 +1,40 @@
-SeoSerpPreview.PageEngine = new Class({
+SeoSerpPreview.NewsEngine = new Class({
     Implements: [Events],
 
     /**
      * Initialize the engine
      */
     initialize: function () {
-        this.title = document.id('ctrl_title');
-        this.pageTitle = document.id('ctrl_pageTitle');
+        this.title = document.id('ctrl_headline');
         this.alias = document.id('ctrl_alias');
-        this.description = document.id('ctrl_description');
 
-        this.addEventListeners();
-        this.fireEvent('ready');
+        // @todo - find a better way to detect tinyMCE initialization than setTimeout()
+        setTimeout(function () {
+            this.description = {
+                'textarea': document.id('ctrl_teaser'),
+                'tinymce': tinyMCE.get('ctrl_teaser')
+            };
+
+            this.addEventListeners();
+            this.fireEvent('ready');
+        }.bind(this), 1000);
     },
 
     /**
      * Add the event listeners
      */
     addEventListeners: function () {
-        var fields = [this.title, this.pageTitle, this.alias, this.description];
+        var fields = [this.title, this.alias];
 
         for (var i = 0; i < fields.length; i++) {
             fields[i].addEvent('keyup', function () {
                 this.fireEvent('change');
             }.bind(this));
         }
+
+        this.description.tinymce.on('keyup', function () {
+            this.fireEvent('change');
+        }.bind(this));
     },
 
     /**
@@ -35,7 +45,7 @@ SeoSerpPreview.PageEngine = new Class({
      * @return {object}
      */
     addDescriptionCounter: function (el) {
-        return el.inject(this.description.getPrevious(), 'bottom');
+        return el.inject(this.description.textarea.getPrevious('h3'), 'bottom');
     },
 
     /**
@@ -44,9 +54,7 @@ SeoSerpPreview.PageEngine = new Class({
      * @returns {string}
      */
     getTitle: function () {
-        var pageTitle = this.pageTitle.get('value');
-
-        return pageTitle ? pageTitle : this.title.get('value');
+        return this.title.get('value');
     },
 
     /**
@@ -64,6 +72,6 @@ SeoSerpPreview.PageEngine = new Class({
      * @returns {string}
      */
     getDescription: function () {
-        return this.description.get('value');
+        return this.description.tinymce.getContent({ format: 'text' });
     }
 });
