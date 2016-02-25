@@ -22,5 +22,5 @@ $GLOBALS['TL_LANG']['MSC']['seo_serp_preview.hint']     = 'Start entering the da
  * Back end tests module
  */
 $GLOBALS['TL_LANG']['MSC']['seo_serp_preview_tests.headline'] = 'SERP Tests';
-$GLOBALS['TL_LANG']['MSC']['seo_serp_preview_tests.empty']    = 'Es gibt keine Seite zum prüfen.';
-$GLOBALS['TL_LANG']['MSC']['seo_serp_preview_tests.edit']     = 'Bearbeite Seite';
+$GLOBALS['TL_LANG']['MSC']['seo_serp_preview_tests.empty']    = 'Es gibt keine Seite zum Prüfen.';
+$GLOBALS['TL_LANG']['MSC']['seo_serp_preview_tests.edit']     = 'Seite bearbeiten';
