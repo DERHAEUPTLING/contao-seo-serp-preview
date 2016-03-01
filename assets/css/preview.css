@@ -1,3 +1,4 @@
+/* Preview widget */
 .seo-serp-preview {
     padding-top: 14px;
 }
@@ -53,4 +54,19 @@
     font-family: arial, sans-serif;
     color: #545454;
     line-height: 18px;
+}
+
+.seo-serp-preview .keyword-mark {
+    background: #c3ff7f;
+}
+
+/* Character counter next to field */
+.seo-serp-preview-counter {
+    margin-left: 5px;
+    font-size: .6875rem;
+    color: #aaa;
+}
+
+.seo-serp-preview-counter.limit-exceeded {
+    color: #c33;
 }

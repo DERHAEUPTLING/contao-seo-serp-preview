@@ -13,13 +13,15 @@
 
 namespace Derhaeuptling\SeoSerpPreview\Engine;
 
+use Contao\CalendarEventsModel;
+use Contao\CalendarModel;
 use Contao\Environment;
 use Contao\PageModel;
 
 /**
- * Handle the tl_page table.
+ * Handle the tl_calendar_events table.
  */
-class PageEngine implements EngineInterface
+class EventsEngine implements EngineInterface
 {
     /**
      * Get the JavaScript engine name
@@ -28,7 +30,7 @@ class PageEngine implements EngineInterface
      */
     public function getJavaScriptEngineName()
     {
-        return 'SeoSerpPreview.PageEngine';
+        return 'SeoSerpPreview.EventsEngine';
     }
 
     /**
@@ -38,7 +40,7 @@ class PageEngine implements EngineInterface
      */
     public function getJavaScriptEngineSource()
     {
-        return 'system/modules/seo_serp_preview/assets/js/engine/page.min.js';
+        return 'system/modules/seo_serp_preview/assets/js/engine/events.min.js';
     }
 
     /**
@@ -50,7 +52,15 @@ class PageEngine implements EngineInterface
      */
     public function getUrlPath($id)
     {
-        if (($pageModel = PageModel::findByPk($id)) === null) {
+        if (($eventModel = CalendarEventsModel::findByPk($id)) === null) {
+            return '';
+        }
+
+        if (($calendarModel = CalendarModel::findByPk($eventModel->pid)) === null) {
+            return '';
+        }
+
+        if (($pageModel = PageModel::findByPk($calendarModel->jumpTo)) === null) {
             return '';
         }
 
@@ -60,6 +70,6 @@ class PageEngine implements EngineInterface
             return '';
         }
 
-        return ($rootModel->rootUseSSL ? 'https://' : 'http://').($rootModel->domain ?: Environment::get('host')).TL_PATH.'/';
+        return ($rootModel->rootUseSSL ? 'https://' : 'http://').($rootModel->domain ?: Environment::get('host')).TL_PATH.'/'.$pageModel->alias.'/';
     }
 }

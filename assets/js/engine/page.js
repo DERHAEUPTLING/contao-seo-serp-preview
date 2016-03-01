@@ -4,13 +4,14 @@ SeoSerpPreview.PageEngine = new Class({
     /**
      * Initialize the engine
      */
-    initialize: function () {
+    init: function () {
         this.title = document.id('ctrl_title');
         this.pageTitle = document.id('ctrl_pageTitle');
         this.alias = document.id('ctrl_alias');
         this.description = document.id('ctrl_description');
 
         this.addEventListeners();
+        this.fireEvent('ready');
     },
 
     /**
@@ -24,6 +25,17 @@ SeoSerpPreview.PageEngine = new Class({
                 this.fireEvent('change');
             }.bind(this));
         }
+    },
+
+    /**
+     * Add the description character counter
+     *
+     * @param {object} el
+     *
+     * @return {object}
+     */
+    addDescriptionCounter: function (el) {
+        return el.inject(this.description.getPrevious(), 'bottom');
     },
 
     /**

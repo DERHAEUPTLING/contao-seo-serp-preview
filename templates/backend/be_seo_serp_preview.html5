@@ -1,6 +1,6 @@
 <?php
-$GLOBALS['TL_CSS'][] = 'system/modules/seo_serp_preview/assets/css/style.css';
-$GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/seo_serp_preview/assets/js/core.js';
+$GLOBALS['TL_CSS'][] = 'system/modules/seo_serp_preview/assets/css/preview.min.css';
+$GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/seo_serp_preview/assets/js/preview.min.js';
 $GLOBALS['TL_JAVASCRIPT'][] = $this->getJavaScriptEngineSource();
 ?>
 

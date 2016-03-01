@@ -14,12 +14,14 @@
 namespace Derhaeuptling\SeoSerpPreview\Engine;
 
 use Contao\Environment;
+use Contao\NewsArchiveModel;
+use Contao\NewsModel;
 use Contao\PageModel;
 
 /**
- * Handle the tl_page table.
+ * Handle the tl_news table.
  */
-class PageEngine implements EngineInterface
+class NewsEngine implements EngineInterface
 {
     /**
      * Get the JavaScript engine name
@@ -28,7 +30,7 @@ class PageEngine implements EngineInterface
      */
     public function getJavaScriptEngineName()
     {
-        return 'SeoSerpPreview.PageEngine';
+        return 'SeoSerpPreview.NewsEngine';
     }
 
     /**
@@ -38,7 +40,7 @@ class PageEngine implements EngineInterface
      */
     public function getJavaScriptEngineSource()
     {
-        return 'system/modules/seo_serp_preview/assets/js/engine/page.min.js';
+        return 'system/modules/seo_serp_preview/assets/js/engine/news.min.js';
     }
 
     /**
@@ -50,7 +52,15 @@ class PageEngine implements EngineInterface
      */
     public function getUrlPath($id)
     {
-        if (($pageModel = PageModel::findByPk($id)) === null) {
+        if (($newsModel = NewsModel::findByPk($id)) === null) {
+            return '';
+        }
+
+        if (($newsArchiveModel = NewsArchiveModel::findByPk($newsModel->pid)) === null) {
+            return '';
+        }
+
+        if (($pageModel = PageModel::findByPk($newsArchiveModel->jumpTo)) === null) {
             return '';
         }
 
@@ -60,6 +70,6 @@ class PageEngine implements EngineInterface
             return '';
         }
 
-        return ($rootModel->rootUseSSL ? 'https://' : 'http://').($rootModel->domain ?: Environment::get('host')).TL_PATH.'/';
+        return ($rootModel->rootUseSSL ? 'https://' : 'http://').($rootModel->domain ?: Environment::get('host')).TL_PATH.'/'.$pageModel->alias.'/';
     }
 }
