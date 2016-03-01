@@ -40,7 +40,7 @@ class EventsEngine implements EngineInterface
      */
     public function getJavaScriptEngineSource()
     {
-        return 'system/modules/seo_serp_preview/assets/js/engine/events.js';
+        return 'system/modules/seo_serp_preview/assets/js/engine/events.min.js';
     }
 
     /**

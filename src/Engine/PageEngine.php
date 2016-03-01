@@ -38,7 +38,7 @@ class PageEngine implements EngineInterface
      */
     public function getJavaScriptEngineSource()
     {
-        return 'system/modules/seo_serp_preview/assets/js/engine/page.js';
+        return 'system/modules/seo_serp_preview/assets/js/engine/page.min.js';
     }
 
     /**

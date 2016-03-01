@@ -40,7 +40,7 @@ class NewsEngine implements EngineInterface
      */
     public function getJavaScriptEngineSource()
     {
-        return 'system/modules/seo_serp_preview/assets/js/engine/news.js';
+        return 'system/modules/seo_serp_preview/assets/js/engine/news.min.js';
     }
 
     /**

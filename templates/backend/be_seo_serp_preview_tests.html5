@@ -1,6 +1,6 @@
 <?php
-$GLOBALS['TL_CSS'][] = 'system/modules/seo_serp_preview/assets/css/tests.css';
-$GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/seo_serp_preview/assets/js/tests.js';
+$GLOBALS['TL_CSS'][] = 'system/modules/seo_serp_preview/assets/css/tests.min.css';
+$GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/seo_serp_preview/assets/js/tests.min.js';
 ?>
 
 <div id="tl_buttons">
