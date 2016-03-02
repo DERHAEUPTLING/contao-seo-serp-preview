@@ -80,6 +80,16 @@ class PreviewWidget extends \Widget
     }
 
     /**
+     * Get the page title
+     *
+     * @return string
+     */
+    public function getPageTitle()
+    {
+        return $this->engine->getPageTitle($this->objDca->activeRecord->id);
+    }
+
+    /**
      * Get the URL suffix
      *
      * @return string

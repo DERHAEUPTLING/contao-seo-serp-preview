@@ -37,4 +37,13 @@ interface EngineInterface
      * @return string
      */
     public function getUrlPath($id);
+
+    /**
+     * Get the page title with ##title## as placeholder for dynamic title
+     *
+     * @param int $id
+     *
+     * @return string
+     */
+    public function getPageTitle($id);
 }

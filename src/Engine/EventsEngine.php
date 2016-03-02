@@ -51,6 +51,38 @@ class EventsEngine extends AbstractEngine implements EngineInterface
      */
     public function getUrlPath($id)
     {
+        if (($pageModel = $this->getPageModel($id)) === null) {
+            return '';
+        }
+
+        return $this->generateUrlPath($pageModel);
+    }
+
+    /**
+     * Get the page title with ##title## as placeholder for dynamic title
+     *
+     * @param int $id
+     *
+     * @return string
+     */
+    public function getPageTitle($id)
+    {
+        if (($pageModel = $this->getPageModel($id)) === null) {
+            return '';
+        }
+
+        return $this->generatePageTitle($pageModel);
+    }
+
+    /**
+     * Get the page model
+     *
+     * @param int $id
+     *
+     * @return PageModel|null
+     */
+    protected function getPageModel($id)
+    {
         if (($eventModel = CalendarEventsModel::findByPk($id)) === null) {
             return '';
         }
@@ -59,10 +91,6 @@ class EventsEngine extends AbstractEngine implements EngineInterface
             return '';
         }
 
-        if (($pageModel = PageModel::findByPk($calendarModel->jumpTo)) === null) {
-            return '';
-        }
-
-        return $this->generateUrlPath($pageModel);
+        return PageModel::findByPk($calendarModel->jumpTo);
     }
 }

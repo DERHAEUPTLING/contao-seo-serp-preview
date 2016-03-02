@@ -19,7 +19,13 @@ $GLOBALS['TL_JAVASCRIPT'][] = $this->getJavaScriptEngineSource();
 
     <div class="preview-body">
         <div class="title">
-            <span class="value" data-ssp-title></span>
+            <?php foreach (explode(' ', $this->getPageTitle()) as $chunk): ?>
+                <?php if ($chunk === '##title##'): ?>
+                    <span class="value" data-ssp-title></span>
+                <?php else: ?>
+                    <span class="fixed"><?= $chunk ?></span>
+                <?php endif; ?>
+            <?php endforeach; ?>
         </div>
         <div class="url">
             <span class="fixed"><?= $this->getUrlPath() ?></span><span class="value" data-ssp-url></span><span class="fixed"><?= $this->getUrlSuffix() ?></span>
