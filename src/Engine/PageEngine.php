@@ -13,13 +13,12 @@
 
 namespace Derhaeuptling\SeoSerpPreview\Engine;
 
-use Contao\Environment;
 use Contao\PageModel;
 
 /**
  * Handle the tl_page table.
  */
-class PageEngine implements EngineInterface
+class PageEngine extends AbstractEngine implements EngineInterface
 {
     /**
      * Get the JavaScript engine name
@@ -54,12 +53,6 @@ class PageEngine implements EngineInterface
             return '';
         }
 
-        $pageModel->loadDetails();
-
-        if (($rootModel = PageModel::findByPk($pageModel->rootId)) === null) {
-            return '';
-        }
-
-        return ($rootModel->rootUseSSL ? 'https://' : 'http://').($rootModel->domain ?: Environment::get('host')).TL_PATH.'/';
+        return $this->generateUrlPath($pageModel);
     }
 }

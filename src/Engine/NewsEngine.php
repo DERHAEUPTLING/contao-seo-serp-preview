@@ -13,7 +13,6 @@
 
 namespace Derhaeuptling\SeoSerpPreview\Engine;
 
-use Contao\Environment;
 use Contao\NewsArchiveModel;
 use Contao\NewsModel;
 use Contao\PageModel;
@@ -21,7 +20,7 @@ use Contao\PageModel;
 /**
  * Handle the tl_news table.
  */
-class NewsEngine implements EngineInterface
+class NewsEngine extends AbstractEngine implements EngineInterface
 {
     /**
      * Get the JavaScript engine name
@@ -64,12 +63,6 @@ class NewsEngine implements EngineInterface
             return '';
         }
 
-        $pageModel->loadDetails();
-
-        if (($rootModel = PageModel::findByPk($pageModel->rootId)) === null) {
-            return '';
-        }
-
-        return ($rootModel->rootUseSSL ? 'https://' : 'http://').($rootModel->domain ?: Environment::get('host')).TL_PATH.'/'.$pageModel->alias.'/';
+        return $this->generateUrlPath($pageModel);
     }
 }

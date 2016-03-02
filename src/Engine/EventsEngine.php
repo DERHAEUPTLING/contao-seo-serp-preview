@@ -15,13 +15,12 @@ namespace Derhaeuptling\SeoSerpPreview\Engine;
 
 use Contao\CalendarEventsModel;
 use Contao\CalendarModel;
-use Contao\Environment;
 use Contao\PageModel;
 
 /**
  * Handle the tl_calendar_events table.
  */
-class EventsEngine implements EngineInterface
+class EventsEngine extends AbstractEngine implements EngineInterface
 {
     /**
      * Get the JavaScript engine name
@@ -64,12 +63,6 @@ class EventsEngine implements EngineInterface
             return '';
         }
 
-        $pageModel->loadDetails();
-
-        if (($rootModel = PageModel::findByPk($pageModel->rootId)) === null) {
-            return '';
-        }
-
-        return ($rootModel->rootUseSSL ? 'https://' : 'http://').($rootModel->domain ?: Environment::get('host')).TL_PATH.'/'.$pageModel->alias.'/';
+        return $this->generateUrlPath($pageModel);
     }
 }
