@@ -13,6 +13,7 @@
 
 namespace Derhaeuptling\SeoSerpPreview\Engine;
 
+use Contao\Environment;
 use Contao\PageModel;
 
 /**
@@ -53,7 +54,13 @@ class PageEngine extends AbstractEngine implements EngineInterface
             return '';
         }
 
-        return $this->generateUrlPath($pageModel);
+        $pageModel->loadDetails();
+
+        if (($rootModel = PageModel::findByPk($pageModel->rootId)) === null) {
+            return '';
+        }
+
+        return ($rootModel->rootUseSSL ? 'https://' : 'http://').($rootModel->domain ?: Environment::get('host')).TL_PATH.'/';
     }
 
     /**
