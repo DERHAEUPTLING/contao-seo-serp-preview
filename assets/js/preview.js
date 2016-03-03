@@ -15,7 +15,8 @@ var SeoSerpPreview = new Class({
         'counterLimitClass': 'limit-exceeded',
         'titleLimit': 55,
         'descriptionLimit': 156,
-        'keywordCharacterLength': 4
+        'keywordCharacterLength': 4,
+        'titleFormat': '##title##'
     },
 
     /**
@@ -151,6 +152,8 @@ var SeoSerpPreview = new Class({
      * @param {string} value
      */
     setTitle: function (value) {
+        value = this.options.titleFormat.replace('##title##', value);
+
         if (value.length > this.options.titleLimit) {
             value = value.substr(0, this.options.titleLimit) + '...';
         }

@@ -19,13 +19,7 @@ $GLOBALS['TL_JAVASCRIPT'][] = $this->getJavaScriptEngineSource();
 
     <div class="preview-body">
         <div class="title">
-            <?php foreach (explode(' ', $this->getPageTitle()) as $chunk): ?>
-                <?php if ($chunk === '##title##'): ?>
-                    <span class="value" data-ssp-title></span>
-                <?php else: ?>
-                    <span class="fixed"><?= $chunk ?></span>
-                <?php endif; ?>
-            <?php endforeach; ?>
+            <span class="value" data-ssp-title></span>
         </div>
         <div class="url">
             <span class="fixed"><?= $this->getUrlPath() ?></span><span class="value" data-ssp-url></span><span class="fixed"><?= $this->getUrlSuffix() ?></span>
@@ -38,6 +32,6 @@ $GLOBALS['TL_JAVASCRIPT'][] = $this->getJavaScriptEngineSource();
 
 <script>
     window.addEvent('domready', function () {
-        new SeoSerpPreview(document.id('<?= $this->id ?>-widget'), new <?= $this->getJavaScriptEngineName() ?>());
+        new SeoSerpPreview(document.id('<?= $this->id ?>-widget'), new <?= $this->getJavaScriptEngineName() ?>(), {titleFormat: '<?= $this->getPageTitle() ?>'});
     });
 </script>
