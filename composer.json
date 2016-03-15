@@ -26,6 +26,9 @@
             "Derhaeuptling\\SeoSerpPreview\\": "src/"
         }
     },
+    "replace": {
+        "contao-legacy/seo_serp_preview": "self.version"
+    },
     "extra": {
         "contao": {
             "sources": {
