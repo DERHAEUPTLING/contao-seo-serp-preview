@@ -51,7 +51,7 @@ abstract class AbstractEngine
         $layoutModel = LayoutModel::findByPk($pageModel->layout);
 
         if ($layoutModel === null) {
-            return '';
+            return '##title##';
         }
 
         $title = $layoutModel->titleTag ?: '{{page::pageTitle}} - {{page::rootPageTitle}}';
