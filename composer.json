@@ -1,5 +1,5 @@
 {
-    "name": "derhaeuptling/Contao-SEO-SERP-Preview",
+    "name": "derhaeuptling/contao-seo-serp-preview",
     "type": "contao-module",
     "description": "Contao SEO SERP Preview - shows how pages, news and events could look like in search engines.",
     "keywords": ["contao", "seo", "serp", "preview"],
