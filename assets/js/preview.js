@@ -7,6 +7,7 @@ var SeoSerpPreview = new Class({
     options: {
         'bodySelector': '.preview-body',
         'hintSelector': '.preview-hint',
+        'indexSelector': '.preview-index',
         'titleSelector': '[data-ssp-title]',
         'urlSelector': '[data-ssp-url]',
         'descriptionSelector': '[data-ssp-description]',
@@ -96,6 +97,7 @@ var SeoSerpPreview = new Class({
     collectElements: function () {
         this.body = this.el.getElement(this.options.bodySelector);
         this.hint = this.el.getElement(this.options.hintSelector);
+        this.index = this.el.getElement(this.options.indexSelector);
         this.title = this.el.getElement(this.options.titleSelector);
         this.url = this.el.getElement(this.options.urlSelector);
         this.description = this.el.getElement(this.options.descriptionSelector);
@@ -110,7 +112,8 @@ var SeoSerpPreview = new Class({
         return data = {
             'title': this.engine.getTitle(),
             'url': this.engine.getUrl(),
-            'description': this.engine.getDescription()
+            'description': this.engine.getDescription(),
+            'index': this.engine.getIndex ? this.engine.getIndex() : true
         };
     },
 
@@ -144,6 +147,9 @@ var SeoSerpPreview = new Class({
         this.setTitle(data.title);
         this.setUrl(data.url);
         this.setDescription(data.description);
+
+        // Toggle the index message
+        data.index ? this.hideIndex() : this.showIndex();
     },
 
     /**
@@ -320,5 +326,19 @@ var SeoSerpPreview = new Class({
     showBody: function () {
         this.hint.hide();
         this.body.show();
+    },
+
+    /**
+     * Hide the index message
+     */
+    hideIndex: function () {
+        this.index.hide();
+    },
+
+    /**
+     * Show the index message
+     */
+    showIndex: function () {
+        this.index.show();
     }
 });

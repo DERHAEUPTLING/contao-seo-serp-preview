@@ -9,6 +9,7 @@ SeoSerpPreview.PageEngine = new Class({
         this.pageTitle = document.id('ctrl_pageTitle');
         this.alias = document.id('ctrl_alias');
         this.description = document.id('ctrl_description');
+        this.robots = document.id('ctrl_robots');
 
         this.addEventListeners();
         this.fireEvent('ready');
@@ -25,6 +26,10 @@ SeoSerpPreview.PageEngine = new Class({
                 this.fireEvent('change');
             }.bind(this));
         }
+
+        this.robots.addEvent('change', function () {
+            this.fireEvent('change');
+        }.bind(this));
     },
 
     /**
@@ -58,12 +63,21 @@ SeoSerpPreview.PageEngine = new Class({
         return this.alias.get('value');
     },
 
-    /*
+    /**
      * Get the description
      *
      * @returns {string}
      */
     getDescription: function () {
         return this.description.get('value');
+    },
+
+    /**
+     * Get the index (true if the page is indexed, false otherwise)
+     *
+     * @returns {bool}
+     */
+    getIndex: function () {
+        return this.robots.get('value').indexOf('noindex') === -1;
     }
 });

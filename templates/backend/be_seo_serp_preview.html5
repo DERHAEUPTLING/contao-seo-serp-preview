@@ -17,6 +17,10 @@ $GLOBALS['TL_JAVASCRIPT'][] = $this->getJavaScriptEngineSource();
         <div class="tl_info"><?= $GLOBALS['TL_LANG']['MSC']['seo_serp_preview.hint'] ?></div>
     </div>
 
+    <div class="preview-index">
+        <p><?= $GLOBALS['TL_LANG']['MSC']['seo_serp_preview.notIndexed'] ?></p>
+    </div>
+
     <div class="preview-body">
         <div class="title">
             <span class="value" data-ssp-title></span>
