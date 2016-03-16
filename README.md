@@ -11,7 +11,6 @@ This plugin helpes that your meta content is the type of content search engines 
 
 <br>
 <br>
-<br>
 
 by Martin Schwenzer [derhaeuptling.com](https://derhaeuptling.com/)
 
