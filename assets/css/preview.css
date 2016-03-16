@@ -64,6 +64,13 @@
     background: #c3ff7f;
 }
 
+/* The page is will not be indexed */
+.seo-serp-preview.no-index .preview-body .title,
+.seo-serp-preview.no-index .preview-body .url,
+.seo-serp-preview.no-index .preview-body .description {
+    color: #999;
+}
+
 /* Character counter next to field */
 .seo-serp-preview-counter {
     margin-left: 5px;

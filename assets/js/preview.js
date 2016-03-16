@@ -14,6 +14,7 @@ var SeoSerpPreview = new Class({
         'keywordMarkClass': 'keyword-mark',
         'counterClass': 'seo-serp-preview-counter',
         'counterLimitClass': 'limit-exceeded',
+        'noIndexClass': 'no-index',
         'titleLimit': 55,
         'descriptionLimit': 156,
         'keywordCharacterLength': 4,
@@ -333,6 +334,7 @@ var SeoSerpPreview = new Class({
      */
     hideIndex: function () {
         this.index.hide();
+        this.el.removeClass(this.options.noIndexClass);
     },
 
     /**
@@ -340,5 +342,6 @@ var SeoSerpPreview = new Class({
      */
     showIndex: function () {
         this.index.show();
+        this.el.addClass(this.options.noIndexClass);
     }
 });
