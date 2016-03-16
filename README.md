@@ -10,7 +10,6 @@ In our experience it has always been not very clear for customers, why they shou
 This plugin helpes that your meta content is the type of content search engines will love!
 
 <br>
-<br>
 
 by Martin Schwenzer [derhaeuptling.com](https://derhaeuptling.com/)
 
