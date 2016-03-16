@@ -31,7 +31,7 @@
 }
 
 .seo-serp-preview .preview-index {
-    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .seo-serp-preview .preview-body {
@@ -65,6 +65,11 @@
 }
 
 /* The page is will not be indexed */
+.seo-serp-preview.no-index .preview-header img {
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+}
+
 .seo-serp-preview.no-index .preview-body .title,
 .seo-serp-preview.no-index .preview-body .url,
 .seo-serp-preview.no-index .preview-body .description {
