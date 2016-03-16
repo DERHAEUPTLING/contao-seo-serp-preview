@@ -1,50 +1,23 @@
-.seo_serp_container {
-    margin-bottom: 9px;
+.seo-serp-test-messages {
+    width: 100%;
+    padding: 2px 0;
+    text-indent: 0;
+    margin-left: -26px;
 }
 
-.seo_serp_container .page {
-    margin: 4px 0 0;
+.seo-serp-test-messages .seo-serp-test-error,
+.seo-serp-test-messages .seo-serp-test-warning {
     padding: 4px 5px 5px 25px;
-    border-radius: 3px;
+    background-repeat: no-repeat;
+    background-position: 5px center;
 }
 
-.seo_serp_container .page.tl_pending {
-    background: #f8f8f8 url("../../../../themes/default/images/loading.gif") no-repeat 6px center;
-    background-size: 25px 14px;
+.seo-serp-test-messages .seo-serp-test-error {
+    background-image: url("../../../../themes/default/images/error.gif");
+    color: #c33;
 }
 
-.seo_serp_container .page:after {
-    content: "";
-    display: table;
-    clear: both;
-}
-
-.seo_serp_container .page .title {
-    float: left;
-    color: inherit;
-}
-
-.seo_serp_container .page .edit {
-    float: right;
-}
-
-.seo_serp_container .page .edit a {
-    text-decoration: underline;
-}
-
-.seo_serp_container .page .messages {
-    clear: both;
-    color: inherit;
-}
-
-.seo_serp_container .page .messages ul {
-    margin-left: 1em;
-    padding: 5px 0 0 1em;
-    list-style-type: disc;
-    color: inherit;
-}
-
-.seo_serp_container .page .messages ul li {
-    list-style: initial;
-    color: inherit;
+.seo-serp-test-messages .seo-serp-test-warning {
+    background-image: url("../../../../themes/default/images/about.gif");
+    color: #c33;
 }

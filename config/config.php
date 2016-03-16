@@ -16,12 +16,17 @@
  */
 array_insert($GLOBALS['BE_MOD']['design'], 2, [
     'seo_serp_tests' => [
-        'callback' => 'Derhaeuptling\SeoSerpPreview\TestsModule',
-        'icon'     => 'system/modules/seo_serp_preview/assets/icons/tests.png',
-    ]
+        'tables' => ['tl_page'],
+        'icon'   => 'system/modules/seo_serp_preview/assets/icons/tests.svg',
+    ],
 ]);
 
 /**
  * Backend form fields
  */
 $GLOBALS['BE_FFL']['seoSerpPreview'] = 'Derhaeuptling\SeoSerpPreview\PreviewWidget';
+
+/**
+ * SEO SERP Tests
+ */
+\Derhaeuptling\SeoSerpPreview\TestsManager::add('description', 'Derhaeuptling\SeoSerpPreview\Test\DescriptionTest');

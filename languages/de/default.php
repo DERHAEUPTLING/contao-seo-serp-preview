@@ -18,10 +18,3 @@
 $GLOBALS['TL_LANG']['MSC']['seo_serp_preview.headline']   = 'SERP Vorschau';
 $GLOBALS['TL_LANG']['MSC']['seo_serp_preview.hint']       = 'Start entering the data in your form to enable the SEO SERP preview.';
 $GLOBALS['TL_LANG']['MSC']['seo_serp_preview.notIndexed'] = 'This page will not be indexed by the search engines (due to selected robots tag value).';
-
-/**
- * Back end tests module
- */
-$GLOBALS['TL_LANG']['MSC']['seo_serp_preview_tests.headline'] = 'SERP Tests';
-$GLOBALS['TL_LANG']['MSC']['seo_serp_preview_tests.empty']    = 'Es gibt keine Seite zum Prüfen.';
-$GLOBALS['TL_LANG']['MSC']['seo_serp_preview_tests.edit']     = 'Seite bearbeiten';
