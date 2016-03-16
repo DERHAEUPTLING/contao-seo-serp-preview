@@ -32,14 +32,6 @@
 
 .seo-serp-preview .preview-index {
     margin-bottom: 10px;
-    padding: 4px 5px 5px 25px;
-    border-radius: 3px;
-    background: #faeeee url("../../../../themes/default/images/error.gif") no-repeat 5px center;
-}
-
-.seo-serp-preview .preview-index p {
-    margin-bottom: 0;
-    color: #c33;
 }
 
 .seo-serp-preview .preview-body {

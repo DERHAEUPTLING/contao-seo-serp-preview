@@ -18,7 +18,7 @@ $GLOBALS['TL_JAVASCRIPT'][] = $this->getJavaScriptEngineSource();
     </div>
 
     <div class="preview-index">
-        <p><?= $GLOBALS['TL_LANG']['MSC']['seo_serp_preview.notIndexed'] ?></p>
+        <div class="tl_info"><?= $GLOBALS['TL_LANG']['MSC']['seo_serp_preview.notIndexed'] ?></div>
     </div>
 
     <div class="preview-body">
