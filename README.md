@@ -3,7 +3,7 @@
 > Shows a preview of how pages, news or events will look like in search engines. <br>
 > Analyses the whole website to improve / extend meta data.
 
-![Alt text](../screenshots/screenshot.jpg?raw=true "Optional Title")
+![Alt text](../screenshots/screenshot.jpg?raw=true)
 
 In our experience it has always been not very clear for customers, why they should take care of meta data and what they will result in search engines resource pages.
 
