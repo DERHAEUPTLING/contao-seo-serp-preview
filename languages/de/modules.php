@@ -15,4 +15,4 @@
 /**
  * Backend modules
  */
-$GLOBALS['TL_LANG']['MOD']['seo_serp_tests'] = ['SERP Tests'];
+$GLOBALS['TL_LANG']['MOD']['seo_serp_tests'] = ['SERP Page Analysis'];
