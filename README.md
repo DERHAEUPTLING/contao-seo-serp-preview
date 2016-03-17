@@ -1,7 +1,7 @@
 # Contao SEO SERP Preview
 
-> Shows a preview of how pages, news or events will look like in search engines. <br>
-> Analyses the whole website to improve / extend meta data.
+Shows a preview of how pages, news or events will look like in search engines. <br>
+Analyses the whole website to improve / extend meta data.
 
 ![Alt text](../screenshots/screenshot.jpg?raw=true)
 
