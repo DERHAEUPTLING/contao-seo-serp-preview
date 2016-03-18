@@ -12,14 +12,12 @@
  */
 
 /**
- * Add extra features when in tests module
+ * Initialize the tests
  */
-if (\Input::get('do') === 'seo_serp_tests') {
-    $GLOBALS['TL_DCA']['tl_page']['config']['onload_callback'][] = [
-        'Derhaeuptling\SeoSerpPreview\TestsHandler',
-        'initialize',
-    ];
-}
+$GLOBALS['TL_DCA']['tl_page']['config']['onload_callback'][] = [
+    'Derhaeuptling\SeoSerpPreview\TestsHandler',
+    'initialize',
+];
 
 /**
  * Extend palettes
@@ -34,7 +32,7 @@ $GLOBALS['TL_DCA']['tl_page']['palettes']['regular'] = str_replace(
  * Add fields
  */
 $GLOBALS['TL_DCA']['tl_page']['fields']['seo_serp_preview'] = [
-    'exclude' => true,
+    'exclude'   => true,
     'inputType' => 'seoSerpPreview',
-    'eval' => ['engine' => 'Derhaeuptling\SeoSerpPreview\Engine\PageEngine', 'tl_class' => 'clr'],
+    'eval'      => ['engine' => 'Derhaeuptling\SeoSerpPreview\Engine\PageEngine', 'tl_class' => 'clr'],
 ];

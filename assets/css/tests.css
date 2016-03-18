@@ -17,8 +17,16 @@
     color: #c33;
 }
 
+.seo-serp-test-error-row {
+    background-color: #faeeee !important;
+}
+
 .seo-serp-test-messages .seo-serp-test-warning {
     background-color: #faf8df;
     background-image: url("../../../../themes/default/images/about.gif");
     color: #c58204;
+}
+
+.seo-serp-test-warning-row {
+    background-color: #faf8df !important;
 }

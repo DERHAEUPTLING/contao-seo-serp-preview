@@ -13,10 +13,8 @@
 
 namespace Derhaeuptling\SeoSerpPreview;
 
-use Contao\Backend;
 use Contao\BackendTemplate;
 use Contao\DataContainer;
-use Contao\Image;
 use Contao\System;
 use Derhaeuptling\SeoSerpPreview\Test\Exception\ErrorException;
 use Derhaeuptling\SeoSerpPreview\Test\Exception\WarningException;
@@ -31,39 +29,56 @@ class TestsHandler
      */
     public function initialize(DataContainer $dc = null)
     {
-        if ($dc->id !== null || \Input::get('act')) {
-            Backend::redirect('contao/main.php?act=error');
+        if ($dc === null || $dc->id) {
+            return;
         }
 
-        $this->lockTable();
-        $this->replaceLabelGenerator();
-        $this->limitGlobalOperations();
-        $this->limitRowOperations();
+        $this->addGlobalOperations();
+
+        if ($this->isEnabled()) {
+            $this->replaceLabelGenerator();
+        }
     }
 
     /**
-     * Return the "edit" button
+     * Return true if the tests are enabled
      *
-     * @param array  $row
-     * @param string $href
-     * @param string $label
-     * @param string $title
-     * @param string $icon
-     * @param string $attributes
-     *
-     * @return string
+     * @return bool
      */
-    public function editButton(array $row, $href, $label, $title, $icon, $attributes)
+    protected function isEnabled()
     {
-        $url = str_replace('do=seo_serp_tests', 'do=page',
-            Backend::addToUrl($href.'&amp;id='.$row['id'].'&amp;popup=1&amp;nb=1&amp;rt='.REQUEST_TOKEN));
+        return \Input::get('serp_tests') ? true : false;
+    }
 
-        $attributes .= ' onclick="SeoSerpTests.openModalIframe({\'width\':768,\'title\':\''.specialchars(str_replace("'",
-                "\\'",
-                sprintf($GLOBALS['TL_LANG']['tl_page']['edit'][1], $row['id']))).'\',\'url\':this.href});return false"';
+    /**
+     * Limit the global operations
+     */
+    protected function addGlobalOperations()
+    {
+        $enabled = $this->isEnabled();
 
-        return '<a href="'.$url.'" title="'.specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon,
-            $label).'</a> ';
+        array_insert($GLOBALS['TL_DCA']['tl_page']['list']['global_operations'], 0, [
+            'serp_tests' => [
+                'label'      => &$GLOBALS['TL_LANG']['MSC'][$enabled ? 'seo_serp_tests.disable' : 'seo_serp_tests.enable'],
+                'href'       => 'serp_tests=' . ($enabled ? '0' : '1'),
+                'icon'       => 'system/modules/seo_serp_preview/assets/icons/tests.svg',
+                'attributes' => 'onclick="Backend.getScrollOffset()"',
+            ]
+        ]);
+    }
+
+    /**
+     * Replace the default label generator
+     */
+    protected function replaceLabelGenerator()
+    {
+        // Preserve the default callback
+        $GLOBALS['TL_DCA']['tl_page']['list']['label']['default_label_callback'] = $GLOBALS['TL_DCA']['tl_page']['list']['label']['label_callback'];
+
+        $GLOBALS['TL_DCA']['tl_page']['list']['label']['label_callback'] = [
+            'Derhaeuptling\SeoSerpPreview\TestsHandler',
+            'generateLabel',
+        ];
     }
 
     /**
@@ -103,7 +118,7 @@ class TestsHandler
         $template->label = $default;
 
         // Add assets
-        $GLOBALS['TL_CSS'][] = 'system/modules/seo_serp_preview/assets/css/tests.min.css';
+        $GLOBALS['TL_CSS'][]        = 'system/modules/seo_serp_preview/assets/css/tests.min.css';
         $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/seo_serp_preview/assets/js/tests.min.js';
 
         return $template->parse();
@@ -133,62 +148,5 @@ class TestsHandler
         }
 
         return $result;
-    }
-
-    /**
-     * Lock the table so no records can be added
-     */
-    protected function lockTable()
-    {
-        $GLOBALS['TL_DCA']['tl_page']['config']['closed'] = true;
-    }
-
-    /**
-     * Replace the default label generator
-     */
-    protected function replaceLabelGenerator()
-    {
-        // Preserve the default callback
-        $GLOBALS['TL_DCA']['tl_page']['list']['label']['default_label_callback'] = $GLOBALS['TL_DCA']['tl_page']['list']['label']['label_callback'];
-
-        $GLOBALS['TL_DCA']['tl_page']['list']['label']['label_callback'] = [
-            'Derhaeuptling\SeoSerpPreview\TestsHandler',
-            'generateLabel',
-        ];
-    }
-
-    /**
-     * Limit the global operations
-     */
-    protected function limitGlobalOperations()
-    {
-        $allowed = ['toggleNodes'];
-
-        foreach ($GLOBALS['TL_DCA']['tl_page']['list']['global_operations'] as $k => $v) {
-            if (!in_array($k, $allowed, true)) {
-                unset($GLOBALS['TL_DCA']['tl_page']['list']['global_operations'][$k]);
-            }
-        }
-    }
-
-    /**
-     * Limit the row operations
-     */
-    protected function limitRowOperations()
-    {
-        $allowed = ['edit'];
-
-        // Remove the operations
-        foreach ($GLOBALS['TL_DCA']['tl_page']['list']['operations'] as $k => $v) {
-            if (!in_array($k, $allowed, true)) {
-                unset($GLOBALS['TL_DCA']['tl_page']['list']['operations'][$k]);
-            }
-        }
-
-        // Replace the default edit button
-        $GLOBALS['TL_DCA']['tl_page']['list']['operations']['edit']['button_callback'] = [
-            'Derhaeuptling\SeoSerpPreview\TestsHandler',
-            'editButton',
-        ];
     }
 }

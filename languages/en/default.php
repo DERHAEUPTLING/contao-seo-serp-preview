@@ -12,8 +12,14 @@
  */
 
 /**
- * Miscellaneous
+ * SERP preview
  */
 $GLOBALS['TL_LANG']['MSC']['seo_serp_preview.headline']   = 'SERP Preview';
 $GLOBALS['TL_LANG']['MSC']['seo_serp_preview.hint']       = 'Start entering the data in your form to enable the SEO SERP preview.';
 $GLOBALS['TL_LANG']['MSC']['seo_serp_preview.notIndexed'] = 'This page will not be indexed by the search engines (due to selected robots tag value).';
+
+/**
+ * SERP tests
+ */
+$GLOBALS['TL_LANG']['MSC']['seo_serp_tests.enable']  = ['Enable SERP', 'Enable the SERP analyzer'];
+$GLOBALS['TL_LANG']['MSC']['seo_serp_tests.disable'] = ['Disable SERP', 'Disable the SERP analyzer'];

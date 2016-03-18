@@ -1,28 +1,42 @@
 var SeoSerpTests = {
     /**
-     * Open an iframe in a modal window
-     *
-     * @param {object} options An optional options object
+     * Color the full record rows based on the message colors they have inside
      */
-    openModalIframe: function(options) {
-        var opt = options || {};
-        var max = (window.getSize().y-180).toInt();
-        if (!opt.height || opt.height > max) opt.height = max;
-        var M = new SimpleModal({
-            'width': opt.width,
-            'hideFooter': true,
-            'draggable': false,
-            'overlayOpacity': .5,
-            'onShow': function() { document.body.setStyle('overflow', 'hidden'); },
-            'onHide': function() {
-                document.body.setStyle('overflow', 'auto');
-                AjaxRequest.displayBox(Contao.lang.loading + ' …');
-                window.location.reload();
+    colorRows: function () {
+        var priority = ['error', 'warning'];
+        var els = document.getElements('[data-seo-serp-messages]');
+
+        for (var i = 0; i < els.length; i++) {
+            var row = els[i].getParent('.tl_file');
+
+            if (!row) {
+                continue;
             }
-        });
-        M.show({
-            'title': opt.title,
-            'contents': '<iframe src="' + opt.url + '" width="100%" height="' + opt.height + '" frameborder="0"></iframe>'
-        });
+
+            var rowType = null;
+            var messageType = null;
+            var messages = els[i].getElements('[data-seo-serp-message]');
+
+            // Determine the row type including the message type priority
+            for (var j = 0; j < messages.length; j++) {
+                messageType = messages[j].get('data-seo-serp-message');
+
+                if (!rowType || priority.indexOf(messageType) < priority.indexOf(rowType)) {
+                    rowType = messageType;
+                }
+            }
+
+            if (rowType) {
+                row.addClass('seo-serp-test-' + rowType + '-row');
+            }
+        }
     }
 };
+
+window.addEvent('domready', function () {
+    SeoSerpTests.colorRows();
+});
+
+window.addEvent('ajax_change', function () {
+    SeoSerpTests.colorRows();
+});

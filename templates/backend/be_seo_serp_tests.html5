@@ -1,18 +1,18 @@
 <?= $this->label ?>
 
 <?php if ($this->errors || $this->warnings): ?>
-    <div class="seo-serp-test-messages">
+    <div class="seo-serp-test-messages" data-seo-serp-messages>
         <?php if ($this->errors): ?>
             <div class="seo-serp-test-errors">
                 <?php foreach ($this->errors as $error): ?>
-                    <div class="seo-serp-test-error"><?= $error ?></div>
+                    <div class="seo-serp-test-error" data-seo-serp-message="error"><?= $error ?></div>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
         <?php if ($this->warnings): ?>
             <div class="seo-serp-test-warnings">
                 <?php foreach ($this->warnings as $warning): ?>
-                    <div class="seo-serp-test-warning"><?= $warning ?></div>
+                    <div class="seo-serp-test-warning" data-seo-serp-message="warning"><?= $warning ?></div>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
