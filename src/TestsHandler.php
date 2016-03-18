@@ -14,7 +14,10 @@
 namespace Derhaeuptling\SeoSerpPreview;
 
 use Contao\BackendTemplate;
+use Contao\Database;
 use Contao\DataContainer;
+use Contao\Input;
+use Contao\Session;
 use Contao\System;
 use Derhaeuptling\SeoSerpPreview\Test\Exception\ErrorException;
 use Derhaeuptling\SeoSerpPreview\Test\Exception\WarningException;
@@ -22,6 +25,12 @@ use Derhaeuptling\SeoSerpPreview\Test\TestInterface;
 
 class TestsHandler
 {
+    /**
+     * Filter name
+     * @var string
+     */
+    protected $filterName = 'seo_serp_tests';
+
     /**
      * Initialize the tests handler
      *
@@ -36,6 +45,8 @@ class TestsHandler
         $this->addGlobalOperations();
 
         if ($this->isEnabled()) {
+            $this->addMessageFilter();
+            $this->filterRecords();
             $this->replaceLabelGenerator();
         }
     }
@@ -51,6 +62,116 @@ class TestsHandler
     }
 
     /**
+     * Add the message filter
+     */
+    protected function addMessageFilter()
+    {
+        $GLOBALS['TL_DCA']['tl_page']['list']['sorting']['panelLayout'] = 'serp_message_filter;'.$GLOBALS['TL_DCA']['tl_page']['list']['sorting']['panelLayout'];
+
+        $GLOBALS['TL_DCA']['tl_page']['list']['sorting']['panel_callback']['serp_message_filter'] = [
+            'Derhaeuptling\SeoSerpPreview\TestsHandler',
+            'generateMessageFilter',
+        ];
+    }
+
+    /**
+     * Generate the message filter
+     *
+     * @return string
+     */
+    public function generateMessageFilter()
+    {
+        $filter  = 'tl_page';
+        $session = Session::getInstance()->getData();
+
+        // Set filter from user input
+        if (Input::post('FORM_SUBMIT') === 'tl_filters') {
+            if (Input::post($this->filterName, true) !== 'tl_'.$this->filterName) {
+                $session['filter'][$filter][$this->filterName] = \Input::post($this->filterName, true);
+            } else {
+                unset($session['filter'][$filter][$this->filterName]);
+            }
+
+            Session::getInstance()->setData($session);
+        }
+
+        $return = '<div class="tl_filter tl_subpanel">
+<strong>'.$GLOBALS['TL_LANG']['MSC']['seo_serp_tests.filter'][0].'</strong>
+<select name="seo_serp_tests" class="tl_select'.(isset($session['filter'][$filter][$this->filterName]) ? ' active' : '').'">
+<option value="tl_seo_serp_tests">'.$GLOBALS['TL_LANG']['MSC']['seo_serp_tests.filter'][1].'</option>
+<option value="tl_seo_serp_tests">---</option>';
+
+        foreach ($this->getAvailableFilters() as $option) {
+            $selected = $option === $this->getActiveFilter();
+            $label    = $GLOBALS['TL_LANG']['MSC']['seo_serp_tests.filterRef'][$option];
+            $return .= '<option value="'.$option.'"'.($selected ? ' selected="selected"' : '').'>'.$label.'</option>';
+        }
+
+        return $return.'</select></div>';
+    }
+
+    /**
+     * Get the active filter
+     *
+     * @return string
+     */
+    protected function getActiveFilter()
+    {
+        $session = Session::getInstance()->getData();
+        $filter  = $session['filter']['tl_page'][$this->filterName];
+
+        return in_array($filter, $this->getAvailableFilters(), true) ? $filter : '';
+    }
+
+    /**
+     * Get the available filters
+     *
+     * @return array
+     */
+    protected function getAvailableFilters()
+    {
+        return ['all', 'errors', 'warnings'];
+    }
+
+    /**
+     * Filter the records by message type
+     */
+    protected function filterRecords()
+    {
+        $filter = $this->getActiveFilter();
+
+        if (!$filter) {
+            return;
+        }
+
+        $pageIds = Database::getInstance()->getChildRecords(Session::getInstance()->get('tl_page_node'), 'tl_page');
+
+        if (count($pageIds) === 0) {
+            $pageIds = [0];
+        }
+
+        $root  = [];
+        $pages = Database::getInstance()->execute("SELECT * FROM tl_page WHERE id IN (".implode(',', $pageIds).")");
+
+        while ($pages->next()) {
+            $data = $this->generateTests($pages->row());
+
+            if ($filter === 'all') {
+                // Add the page to the root if there is at least one message of any type
+                foreach ($data as $messages) {
+                    if (count($messages) > 0) {
+                        $root[] = $pages->id;
+                    }
+                }
+            } elseif (count($data[$filter]) > 0) {
+                $root[] = $pages->id;
+            }
+        }
+
+        $GLOBALS['TL_DCA']['tl_page']['list']['sorting']['root'] = (count($root) === 0) ? [0] : $root;
+    }
+
+    /**
      * Limit the global operations
      */
     protected function addGlobalOperations()
@@ -60,10 +181,10 @@ class TestsHandler
         array_insert($GLOBALS['TL_DCA']['tl_page']['list']['global_operations'], 0, [
             'serp_tests' => [
                 'label'      => &$GLOBALS['TL_LANG']['MSC'][$enabled ? 'seo_serp_tests.disable' : 'seo_serp_tests.enable'],
-                'href'       => 'serp_tests=' . ($enabled ? '0' : '1'),
+                'href'       => 'serp_tests='.($enabled ? '0' : '1'),
                 'icon'       => 'system/modules/seo_serp_preview/assets/icons/tests.svg',
                 'attributes' => 'onclick="Backend.getScrollOffset()"',
-            ]
+            ],
         ]);
     }
 
@@ -129,7 +250,7 @@ class TestsHandler
      *
      * @param array $data
      *
-     * @return string
+     * @return array
      */
     protected function generateTests(array $data)
     {
