@@ -66,7 +66,7 @@ class TestsHandler
      */
     protected function addMessageFilter()
     {
-        $GLOBALS['TL_DCA']['tl_page']['list']['sorting']['panelLayout'] = 'serp_message_filter;'.$GLOBALS['TL_DCA']['tl_page']['list']['sorting']['panelLayout'];
+        $GLOBALS['TL_DCA']['tl_page']['list']['sorting']['panelLayout'] = 'serp_message_filter,'.$GLOBALS['TL_DCA']['tl_page']['list']['sorting']['panelLayout'];
 
         $GLOBALS['TL_DCA']['tl_page']['list']['sorting']['panel_callback']['serp_message_filter'] = [
             'Derhaeuptling\SeoSerpPreview\TestsHandler',
