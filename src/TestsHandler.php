@@ -45,10 +45,37 @@ class TestsHandler
         $this->addGlobalOperations();
 
         if ($this->isEnabled()) {
+            $this->autoExpandTree();
             $this->addMessageFilter();
             $this->filterRecords();
             $this->replaceLabelGenerator();
         }
+    }
+
+    /**
+     * Auto expand the tree
+     *
+     * @throws \Exception
+     */
+    public function autoExpandTree()
+    {
+        $session = Session::getInstance()->getData();
+
+        if ($session['seo_serp_expand_tree'] === 'tl_page') {
+            $nodes = Database::getInstance()->execute("SELECT DISTINCT pid FROM tl_page WHERE pid>0");
+
+            // Reset the array first
+            $session['tl_page_tree'] = [];
+
+            // Expand the tree
+            while ($nodes->next()) {
+                $session['tl_page_tree'][$nodes->pid] = 1;
+            }
+
+            $session['seo_serp_expand'] = null;
+        }
+
+        Session::getInstance()->setData($session);
     }
 
     /**
@@ -88,6 +115,7 @@ class TestsHandler
         if (Input::post('FORM_SUBMIT') === 'tl_filters') {
             if (Input::post($this->filterName, true) !== 'tl_'.$this->filterName) {
                 $session['filter'][$filter][$this->filterName] = \Input::post($this->filterName, true);
+                $session['seo_serp_expand_tree']               = 'tl_page';
             } else {
                 unset($session['filter'][$filter][$this->filterName]);
             }
