@@ -13,6 +13,7 @@
 
 namespace Derhaeuptling\SeoSerpPreview;
 
+use Contao\Backend;
 use Contao\BackendTemplate;
 use Contao\Database;
 use Contao\DataContainer;
@@ -61,21 +62,25 @@ class TestsHandler
     {
         $session = Session::getInstance()->getData();
 
-        if ($session['seo_serp_expand_tree'] === 'tl_page') {
-            $nodes = Database::getInstance()->execute("SELECT DISTINCT pid FROM tl_page WHERE pid>0");
-
-            // Reset the array first
-            $session['tl_page_tree'] = [];
-
-            // Expand the tree
-            while ($nodes->next()) {
-                $session['tl_page_tree'][$nodes->pid] = 1;
-            }
-
-            $session['seo_serp_expand'] = null;
+        if ($session['seo_serp_expand_tree'] !== 'tl_page') {
+            return;
         }
 
+        $nodes = Database::getInstance()->execute("SELECT DISTINCT pid FROM tl_page WHERE pid>0");
+
+        // Reset the array first
+        $session['tl_page_tree'] = [];
+
+        // Expand the tree
+        while ($nodes->next()) {
+            $session['tl_page_tree'][$nodes->pid] = 1;
+        }
+
+        // Avoid redirect loop
+        $session['seo_serp_expand_tree'] = null;
+
         Session::getInstance()->setData($session);
+        Backend::reload();
     }
 
     /**
