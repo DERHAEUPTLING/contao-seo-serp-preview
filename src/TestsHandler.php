@@ -17,6 +17,7 @@ use Contao\Backend;
 use Contao\BackendTemplate;
 use Contao\Database;
 use Contao\DataContainer;
+use Contao\Environment;
 use Contao\Input;
 use Contao\Session;
 use Contao\System;
@@ -62,7 +63,7 @@ class TestsHandler
     {
         $session = Session::getInstance()->getData();
 
-        if ($session['seo_serp_expand_tree'] !== 'tl_page') {
+        if ($session['seo_serp_expand_tree'] !== 'tl_page' && !Input::get('serp_tests_expand')) {
             return;
         }
 
@@ -80,7 +81,7 @@ class TestsHandler
         $session['seo_serp_expand_tree'] = null;
 
         Session::getInstance()->setData($session);
-        Backend::reload();
+        Backend::redirect(str_replace('serp_tests_expand=1', '', Environment::get('request')));
     }
 
     /**
@@ -214,7 +215,7 @@ class TestsHandler
         array_insert($GLOBALS['TL_DCA']['tl_page']['list']['global_operations'], 0, [
             'serp_tests' => [
                 'label'      => &$GLOBALS['TL_LANG']['MSC'][$enabled ? 'seo_serp_tests.disable' : 'seo_serp_tests.enable'],
-                'href'       => 'serp_tests='.($enabled ? '0' : '1'),
+                'href'       => 'serp_tests='.($enabled ? '0' : '1&serp_tests_expand=1'),
                 'icon'       => 'system/modules/seo_serp_preview/assets/icons/tests.svg',
                 'attributes' => 'onclick="Backend.getScrollOffset()"',
             ],
