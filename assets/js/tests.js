@@ -7,7 +7,7 @@ var SeoSerpTests = {
         var els = document.getElements('[data-seo-serp-messages]');
 
         for (var i = 0; i < els.length; i++) {
-            var row = els[i].getParent('.tl_file');
+            var row = els[i].getParent('.tl_file') || els[i].getParent('.tl_content');
 
             if (!row) {
                 continue;
