@@ -23,7 +23,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Derhaeuptling\\SeoSerpPreview\\": "src/"
+            "Derhaeuptling\\SeoSerpPreview\\": "src/Derhaeuptling/SeoSerpPreview/"
         }
     },
     "replace": {
