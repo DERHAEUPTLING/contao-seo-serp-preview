@@ -2,6 +2,7 @@
     width: 100%;
     padding: 2px 0;
     text-indent: 0;
+    clear: both;
 }
 
 .seo-serp-test-messages .seo-serp-test-error,

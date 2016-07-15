@@ -19,12 +19,22 @@ use Derhaeuptling\SeoSerpPreview\Test\Exception\ErrorException;
 interface TestInterface
 {
     /**
+     * Return true if the test supports table
+     *
+     * @param string $table
+     *
+     * @return bool
+     */
+    public function supports($table);
+
+    /**
      * Run the test
      *
-     * @param array $data
+     * @param array  $data
+     * @param string $table
      *
      * @throws ErrorException
      * @throws WarningException
      */
-    public function run(array $data);
+    public function run(array $data, $table);
 }

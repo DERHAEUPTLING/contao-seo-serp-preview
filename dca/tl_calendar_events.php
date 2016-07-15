@@ -12,6 +12,14 @@
  */
 
 /**
+ * Initialize the tests
+ */
+$GLOBALS['TL_DCA']['tl_calendar_events']['config']['onload_callback'][] = [
+    'Derhaeuptling\SeoSerpPreview\TestsHandler\EventsHandler',
+    'initialize',
+];
+
+/**
  * Extend palettes
  */
 $GLOBALS['TL_DCA']['tl_calendar_events']['palettes']['default'] = str_replace(

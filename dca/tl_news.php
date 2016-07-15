@@ -12,6 +12,14 @@
  */
 
 /**
+ * Initialize the tests
+ */
+$GLOBALS['TL_DCA']['tl_news']['config']['onload_callback'][] = [
+    'Derhaeuptling\SeoSerpPreview\TestsHandler\NewsHandler',
+    'initialize',
+];
+
+/**
  * Extend palettes
  */
 $GLOBALS['TL_DCA']['tl_news']['palettes']['default'] = str_replace(

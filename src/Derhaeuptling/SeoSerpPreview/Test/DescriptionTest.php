@@ -26,30 +26,66 @@ class DescriptionTest implements TestInterface
     const MAX_LENGTH = 156;
 
     /**
+     * Return true if the test supports table
+     *
+     * @param string $table
+     *
+     * @return bool
+     */
+    public function supports($table)
+    {
+        return in_array($table, ['tl_calendar_events', 'tl_news', 'tl_page'], true);
+    }
+
+    /**
      * Run the test
      *
-     * @param array $data
+     * @param array  $data
+     * @param string $table
      *
      * @throws ErrorException
      * @throws WarningException
      */
-    public function run(array $data)
+    public function run(array $data, $table)
     {
-        if ($data['type'] !== 'regular') {
-            return;
-        }
+        switch ($table) {
+            case 'tl_calendar_events':
+            case 'tl_news':
+                $this->check($data['teaser']);
+                break;
 
+            case 'tl_page':
+                if ($data['type'] === 'regular') {
+                    $this->check($data['description']);
+                }
+                break;
+        }
+    }
+
+    /**
+     * Run the test
+     *
+     * @param array  $data
+     * @param string $table
+     *
+     * @throws ErrorException
+     * @throws WarningException
+     */
+    private function check($value)
+    {
         // The description does not exist
-        if (!$data['description']) {
+        if (!$value) {
             throw new ErrorException($GLOBALS['TL_LANG']['SST']['test.description']['empty']);
         }
 
         // The description is too long
-        if (strlen($data['description']) > self::MAX_LENGTH) {
-            throw new WarningException(sprintf(
-                $GLOBALS['TL_LANG']['SST']['test.description']['length'],
-                self::MAX_LENGTH
-            ));
+        if (strlen($value) > self::MAX_LENGTH) {
+            throw new WarningException(
+                sprintf(
+                    $GLOBALS['TL_LANG']['SST']['test.description']['length'],
+                    self::MAX_LENGTH
+                )
+            );
         }
     }
 }

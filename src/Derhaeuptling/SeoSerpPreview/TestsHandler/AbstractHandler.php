@@ -11,22 +11,33 @@
  * @license LGPL
  */
 
-namespace Derhaeuptling\SeoSerpPreview;
+namespace Derhaeuptling\SeoSerpPreview\TestsHandler;
 
-use Contao\Backend;
 use Contao\BackendTemplate;
 use Contao\Database;
 use Contao\DataContainer;
-use Contao\Environment;
 use Contao\Input;
 use Contao\Session;
 use Contao\System;
 use Derhaeuptling\SeoSerpPreview\Test\Exception\ErrorException;
 use Derhaeuptling\SeoSerpPreview\Test\Exception\WarningException;
 use Derhaeuptling\SeoSerpPreview\Test\TestInterface;
+use Derhaeuptling\SeoSerpPreview\TestsManager;
 
-class TestsHandler
+abstract class AbstractHandler
 {
+    /**
+     * Table name
+     * @var string
+     */
+    protected $table;
+
+    /**
+     * Data contaioner
+     * @var DataContainer
+     */
+    protected $dc;
+
     /**
      * Filter name
      * @var string
@@ -40,48 +51,59 @@ class TestsHandler
      */
     public function initialize(DataContainer $dc = null)
     {
-        if ($dc === null || $dc->id) {
+        if ($dc === null) {
             return;
         }
+
+        $this->table = $this->getTableName();
+        $this->dc    = $dc;
 
         $this->addGlobalOperations();
 
         if ($this->isEnabled()) {
-            $this->autoExpandTree();
-            $this->addMessageFilter();
-            $this->filterRecords();
-            $this->replaceLabelGenerator();
+            $this->initializeEnabled();
         }
     }
 
     /**
-     * Auto expand the tree
-     *
-     * @throws \Exception
+     * Initialize the tests handler if enabled
      */
-    public function autoExpandTree()
+    protected function initializeEnabled()
     {
-        $session = Session::getInstance()->getData();
+        $this->addMessageFilter();
+        $this->filterRecords();
+        $this->replaceLabelGenerator();
+    }
 
-        if ($session['seo_serp_expand_tree'] !== 'tl_page' && !Input::get('serp_tests_expand')) {
-            return;
-        }
+    /**
+     * Get the table name
+     *
+     * @return string
+     */
+    abstract protected function getTableName();
 
-        $nodes = Database::getInstance()->execute("SELECT DISTINCT pid FROM tl_page WHERE pid>0");
+    /**
+     * Get the applicable record IDs
+     *
+     * @return array
+     */
+    abstract protected function getRecordIds();
 
-        // Reset the array first
-        $session['tl_page_tree'] = [];
-
-        // Expand the tree
-        while ($nodes->next()) {
-            $session['tl_page_tree'][$nodes->pid] = 1;
-        }
-
-        // Avoid redirect loop
-        $session['seo_serp_expand_tree'] = null;
-
-        Session::getInstance()->setData($session);
-        Backend::redirect(str_replace('serp_tests_expand=1', '', Environment::get('request')));
+    /**
+     * Get the global operation
+     *
+     * @param bool $enabled
+     *
+     * @return array
+     */
+    protected function getGlobalOperation($enabled)
+    {
+        return [
+            'label'      => &$GLOBALS['TL_LANG']['MSC'][$enabled ? 'seo_serp_tests.disable' : 'seo_serp_tests.enable'],
+            'href'       => 'serp_tests='.($enabled ? '0' : '1'),
+            'icon'       => 'system/modules/seo_serp_preview/assets/icons/tests.svg',
+            'attributes' => 'onclick="Backend.getScrollOffset()"',
+        ];
     }
 
     /**
@@ -99,10 +121,9 @@ class TestsHandler
      */
     protected function addMessageFilter()
     {
-        $GLOBALS['TL_DCA']['tl_page']['list']['sorting']['panelLayout'] = 'serp_message_filter,'.$GLOBALS['TL_DCA']['tl_page']['list']['sorting']['panelLayout'];
-
-        $GLOBALS['TL_DCA']['tl_page']['list']['sorting']['panel_callback']['serp_message_filter'] = [
-            'Derhaeuptling\SeoSerpPreview\TestsHandler',
+        $GLOBALS['TL_DCA'][$this->table]['list']['sorting']['panelLayout']                           = 'serp_message_filter,'.$GLOBALS['TL_DCA'][$this->table]['list']['sorting']['panelLayout'];
+        $GLOBALS['TL_DCA'][$this->table]['list']['sorting']['panel_callback']['serp_message_filter'] = [
+            static::class,
             'generateMessageFilter',
         ];
     }
@@ -114,16 +135,14 @@ class TestsHandler
      */
     public function generateMessageFilter()
     {
-        $filter  = 'tl_page';
         $session = Session::getInstance()->getData();
 
         // Set filter from user input
         if (Input::post('FORM_SUBMIT') === 'tl_filters') {
             if (Input::post($this->filterName, true) !== 'tl_'.$this->filterName) {
-                $session['filter'][$filter][$this->filterName] = \Input::post($this->filterName, true);
-                $session['seo_serp_expand_tree']               = 'tl_page';
+                $session['filter'][$this->table][$this->filterName] = \Input::post($this->filterName, true);
             } else {
-                unset($session['filter'][$filter][$this->filterName]);
+                unset($session['filter'][$this->table][$this->filterName]);
             }
 
             Session::getInstance()->setData($session);
@@ -131,7 +150,7 @@ class TestsHandler
 
         $return = '<div class="tl_filter tl_subpanel">
 <strong>'.$GLOBALS['TL_LANG']['MSC']['seo_serp_tests.filter'][0].'</strong>
-<select name="seo_serp_tests" class="tl_select'.(isset($session['filter'][$filter][$this->filterName]) ? ' active' : '').'">
+<select name="seo_serp_tests" class="tl_select'.(isset($session['filter'][$this->table][$this->filterName]) ? ' active' : '').'">
 <option value="tl_seo_serp_tests">'.$GLOBALS['TL_LANG']['MSC']['seo_serp_tests.filter'][1].'</option>
 <option value="tl_seo_serp_tests">---</option>';
 
@@ -152,7 +171,7 @@ class TestsHandler
     protected function getActiveFilter()
     {
         $session = Session::getInstance()->getData();
-        $filter  = $session['filter']['tl_page'][$this->filterName];
+        $filter  = $session['filter'][$this->table][$this->filterName];
 
         return in_array($filter, $this->getAvailableFilters(), true) ? $filter : '';
     }
@@ -178,31 +197,33 @@ class TestsHandler
             return;
         }
 
-        $pageIds = Database::getInstance()->getChildRecords(Session::getInstance()->get('tl_page_node'), 'tl_page');
+        $recordIds = $this->getRecordIds();
 
-        if (count($pageIds) === 0) {
-            $pageIds = [0];
+        if (count($recordIds) === 0) {
+            $recordIds = [0];
         }
 
-        $root  = [];
-        $pages = Database::getInstance()->execute("SELECT * FROM tl_page WHERE id IN (".implode(',', $pageIds).")");
+        $root    = [];
+        $records = Database::getInstance()->execute(
+            "SELECT * FROM ".$this->table." WHERE id IN (".implode(',', $recordIds).")"
+        );
 
-        while ($pages->next()) {
-            $data = $this->generateTests($pages->row());
+        while ($records->next()) {
+            $data = $this->generateTests($records->row());
 
             if ($filter === 'all') {
-                // Add the page to the root if there is at least one message of any type
+                // Add the record to the root if there is at least one message of any type
                 foreach ($data as $messages) {
                     if (count($messages) > 0) {
-                        $root[] = $pages->id;
+                        $root[] = $records->id;
                     }
                 }
             } elseif (count($data[$filter]) > 0) {
-                $root[] = $pages->id;
+                $root[] = $records->id;
             }
         }
 
-        $GLOBALS['TL_DCA']['tl_page']['list']['sorting']['root'] = (count($root) === 0) ? [0] : $root;
+        $GLOBALS['TL_DCA'][$this->table]['list']['sorting']['root'] = (count($root) === 0) ? [0] : $root;
     }
 
     /**
@@ -210,16 +231,13 @@ class TestsHandler
      */
     protected function addGlobalOperations()
     {
-        $enabled = $this->isEnabled();
-
-        array_insert($GLOBALS['TL_DCA']['tl_page']['list']['global_operations'], 0, [
-            'serp_tests' => [
-                'label'      => &$GLOBALS['TL_LANG']['MSC'][$enabled ? 'seo_serp_tests.disable' : 'seo_serp_tests.enable'],
-                'href'       => 'serp_tests='.($enabled ? '0' : '1&serp_tests_expand=1'),
-                'icon'       => 'system/modules/seo_serp_preview/assets/icons/tests.svg',
-                'attributes' => 'onclick="Backend.getScrollOffset()"',
-            ],
-        ]);
+        array_insert(
+            $GLOBALS['TL_DCA'][$this->table]['list']['global_operations'],
+            0,
+            [
+                'serp_tests' => $this->getGlobalOperation($this->isEnabled()),
+            ]
+        );
     }
 
     /**
@@ -227,13 +245,19 @@ class TestsHandler
      */
     protected function replaceLabelGenerator()
     {
-        // Preserve the default callback
-        $GLOBALS['TL_DCA']['tl_page']['list']['label']['default_label_callback'] = $GLOBALS['TL_DCA']['tl_page']['list']['label']['label_callback'];
-
-        $GLOBALS['TL_DCA']['tl_page']['list']['label']['label_callback'] = [
-            'Derhaeuptling\SeoSerpPreview\TestsHandler',
-            'generateLabel',
-        ];
+        if ($GLOBALS['TL_DCA'][$this->table]['list']['sorting']['mode'] === 4) {
+            $GLOBALS['TL_DCA'][$this->table]['list']['sorting']['default_child_record_callback'] = $GLOBALS['TL_DCA'][$this->table]['list']['sorting']['child_record_callback'];
+            $GLOBALS['TL_DCA'][$this->table]['list']['sorting']['child_record_callback']         = [
+                static::class,
+                'generateLabel',
+            ];
+        } else {
+            $GLOBALS['TL_DCA'][$this->table]['list']['label']['default_label_callback'] = $GLOBALS['TL_DCA'][$this->table]['list']['label']['label_callback'];
+            $GLOBALS['TL_DCA'][$this->table]['list']['label']['label_callback']         = [
+                static::class,
+                'generateLabel',
+            ];
+        }
     }
 
     /**
@@ -250,19 +274,29 @@ class TestsHandler
      */
     public function generateLabel(
         array $row,
-        $label,
+        $label = null,
         DataContainer $dc = null,
         $imageAttribute = '',
         $blnReturnImage = false,
         $blnProtected = false
     ) {
-        $default  = '';
-        $callback = $GLOBALS['TL_DCA']['tl_page']['list']['label']['default_label_callback'];
+        $default = '';
+
+        if ($GLOBALS['TL_DCA'][$this->table]['list']['sorting']['mode'] === 4) {
+            $callback = $GLOBALS['TL_DCA'][$this->table]['list']['sorting']['default_child_record_callback'];
+        } else {
+            $callback = $GLOBALS['TL_DCA'][$this->table]['list']['label']['default_label_callback'];
+        }
 
         // Get the default label
         if (is_array($callback)) {
             $default = System::importStatic($callback[0])->{$callback[1]}(
-                $row, $label, $dc, $imageAttribute, $blnReturnImage, $blnProtected
+                $row,
+                $label,
+                $dc,
+                $imageAttribute,
+                $blnReturnImage,
+                $blnProtected
             );
         } elseif (is_callable($callback)) {
             $default = $callback($row, $label, $dc, $imageAttribute, $blnReturnImage, $blnProtected);
@@ -293,8 +327,13 @@ class TestsHandler
 
         /** @var TestInterface $test */
         foreach (TestsManager::getAll() as $test) {
+            // Skip the unsupported tests
+            if (!$test->supports($this->table)) {
+                continue;
+            }
+
             try {
-                $test->run($data);
+                $test->run($data, $this->table);
             } catch (ErrorException $e) {
                 $result['errors'][] = $e->getMessage();
             } catch (WarningException $e) {

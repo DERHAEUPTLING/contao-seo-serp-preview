@@ -15,7 +15,7 @@
  * Initialize the tests
  */
 $GLOBALS['TL_DCA']['tl_page']['config']['onload_callback'][] = [
-    'Derhaeuptling\SeoSerpPreview\TestsHandler',
+    'Derhaeuptling\SeoSerpPreview\TestsHandler\PageHandler',
     'initialize',
 ];
 
