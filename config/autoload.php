@@ -20,6 +20,7 @@ NamespaceClassLoader::add('Derhaeuptling\SeoSerpPreview', 'system/modules/seo_se
  * Register the templates
  */
 TemplateLoader::addFiles([
+    'be_seo_serp_module'  => 'system/modules/seo_serp_preview/templates/backend',
     'be_seo_serp_preview' => 'system/modules/seo_serp_preview/templates/backend',
     'be_seo_serp_tests'   => 'system/modules/seo_serp_preview/templates/backend',
 ]);

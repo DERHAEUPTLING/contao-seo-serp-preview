@@ -12,6 +12,14 @@
  */
 
 /**
+ * Backend module
+ */
+$GLOBALS['BE_MOD']['system']['seo_serp_preview'] = [
+    'icon'     => 'system/modules/seo_serp_preview/assets/icons/module.png',
+    'callback' => 'Derhaeuptling\SeoSerpPreview\PreviewModule',
+];
+
+/**
  * Backend form fields
  */
 $GLOBALS['BE_FFL']['seoSerpPreview'] = 'Derhaeuptling\SeoSerpPreview\PreviewWidget';

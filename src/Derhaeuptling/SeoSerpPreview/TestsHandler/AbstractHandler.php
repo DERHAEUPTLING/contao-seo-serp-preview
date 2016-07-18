@@ -42,7 +42,13 @@ abstract class AbstractHandler
      * Filter name
      * @var string
      */
-    protected $filterName = 'seo_serp_tests';
+    public static $filterName = 'seo_serp_tests';
+
+    /**
+     * Parameter name
+     * @var string
+     */
+    public static $serpParamName = 'serp_tests';
 
     /**
      * Initialize the tests handler
@@ -100,7 +106,7 @@ abstract class AbstractHandler
     {
         return [
             'label'      => &$GLOBALS['TL_LANG']['MSC'][$enabled ? 'seo_serp_tests.disable' : 'seo_serp_tests.enable'],
-            'href'       => 'serp_tests='.($enabled ? '0' : '1'),
+            'href'       => static::$serpParamName.'='.($enabled ? '0' : '1'),
             'icon'       => 'system/modules/seo_serp_preview/assets/icons/tests.svg',
             'attributes' => 'onclick="Backend.getScrollOffset()"',
         ];
@@ -113,7 +119,7 @@ abstract class AbstractHandler
      */
     protected function isEnabled()
     {
-        return \Input::get('serp_tests') ? true : false;
+        return \Input::get(static::$serpParamName) ? true : false;
     }
 
     /**
@@ -139,10 +145,10 @@ abstract class AbstractHandler
 
         // Set filter from user input
         if (Input::post('FORM_SUBMIT') === 'tl_filters') {
-            if (Input::post($this->filterName, true) !== 'tl_'.$this->filterName) {
-                $session['filter'][$this->table][$this->filterName] = \Input::post($this->filterName, true);
+            if (Input::post(static::$filterName, true) !== 'tl_'.static::$filterName) {
+                $session['filter'][$this->table][static::$filterName] = \Input::post(static::$filterName, true);
             } else {
-                unset($session['filter'][$this->table][$this->filterName]);
+                unset($session['filter'][$this->table][static::$filterName]);
             }
 
             Session::getInstance()->setData($session);
@@ -150,11 +156,11 @@ abstract class AbstractHandler
 
         $return = '<div class="tl_filter tl_subpanel">
 <strong>'.$GLOBALS['TL_LANG']['MSC']['seo_serp_tests.filter'][0].'</strong>
-<select name="seo_serp_tests" class="tl_select'.(isset($session['filter'][$this->table][$this->filterName]) ? ' active' : '').'">
+<select name="seo_serp_tests" class="tl_select'.(isset($session['filter'][$this->table][static::$filterName]) ? ' active' : '').'">
 <option value="tl_seo_serp_tests">'.$GLOBALS['TL_LANG']['MSC']['seo_serp_tests.filter'][1].'</option>
 <option value="tl_seo_serp_tests">---</option>';
 
-        foreach ($this->getAvailableFilters() as $option) {
+        foreach (static::getAvailableFilters() as $option) {
             $selected = $option === $this->getActiveFilter();
             $label    = $GLOBALS['TL_LANG']['MSC']['seo_serp_tests.filterRef'][$option];
             $return .= '<option value="'.$option.'"'.($selected ? ' selected="selected"' : '').'>'.$label.'</option>';
@@ -171,9 +177,9 @@ abstract class AbstractHandler
     protected function getActiveFilter()
     {
         $session = Session::getInstance()->getData();
-        $filter  = $session['filter'][$this->table][$this->filterName];
+        $filter  = $session['filter'][$this->table][static::$filterName];
 
-        return in_array($filter, $this->getAvailableFilters(), true) ? $filter : '';
+        return in_array($filter, static::getAvailableFilters(), true) ? $filter : '';
     }
 
     /**
@@ -181,7 +187,7 @@ abstract class AbstractHandler
      *
      * @return array
      */
-    protected function getAvailableFilters()
+    public static function getAvailableFilters()
     {
         return ['all', 'errors', 'warnings'];
     }
