@@ -14,7 +14,7 @@
 /**
  * Backend module
  */
-$GLOBALS['BE_MOD']['system']['seo_serp_preview'] = [
+$GLOBALS['BE_MOD']['content']['seo_serp_preview'] = [
     'icon'     => 'system/modules/seo_serp_preview/assets/icons/module.png',
     'callback' => 'Derhaeuptling\SeoSerpPreview\PreviewModule',
 ];
