@@ -9,7 +9,6 @@
     border-bottom: none;
 }
 
-
 .seo-serp-module .module .name {
     margin-bottom: 5px;
 }
@@ -20,13 +19,35 @@
 
 .seo-serp-module .module p {
     margin-bottom: 5px;
+    padding: 0 !important;
 }
 
 .seo-serp-module .module p:last-child {
     margin-bottom: 0;
 }
 
-.seo-serp-module .seo-serp-test-messages  a {
+.seo-serp-module .module p:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.seo-serp-module .module p span {
+    padding: 4px 5px 5px 5px;
+}
+
+.seo-serp-module .module p span.status {
+    float: left;
+    padding-left: 25px;
+}
+
+.seo-serp-module .module p span.reference {
+    float: right;
+    background: #444;
+    color: #fff;
+}
+
+.seo-serp-module .seo-serp-test-messages a {
     text-decoration: underline;
 }
 

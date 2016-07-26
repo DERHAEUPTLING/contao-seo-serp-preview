@@ -14,17 +14,33 @@
                     </div>
 
                     <div class="seo-serp-test-messages">
-                        <?php if ($module['tests']['errors']): ?>
-                            <p class="seo-serp-test-error"><?= sprintf($GLOBALS['TL_LANG']['MSC']['seo_serp_module.errors'], $module['tests']['errors']) ?> <a href="<?= ampersand($module['url']) ?>" title="<?= specialchars($GLOBALS['TL_LANG']['MSC']['seo_serp_module.fix']) ?>"><?= $GLOBALS['TL_LANG']['MSC']['seo_serp_module.fix'] ?></a></p>
-                        <?php endif; ?>
+                        <?php foreach ($module['tests'] as $test): ?>
+                            <?php if ($test['result']['warnings'] || $test['result']['errors']): ?>
+                                <p class="<?php if ($test['result']['errors']): ?>seo-serp-test-error<?php else: ?>seo-serp-test-warning<?php endif; ?>">
+                                    <span class="status">
+                                        <?php if ($test['result']['errors']): ?>
+                                            <?= sprintf((($test['result']['errors'] === 1) ? $GLOBALS['TL_LANG']['MSC']['seo_serp_module.error'] : $GLOBALS['TL_LANG']['MSC']['seo_serp_module.errors']), $test['result']['errors']) ?>
+                                        <?php endif; ?>
 
-                        <?php if ($module['tests']['warnings']): ?>
-                            <p class="seo-serp-test-warning"><?= sprintf($GLOBALS['TL_LANG']['MSC']['seo_serp_module.warnings'], $module['tests']['warnings']) ?> <a href="<?= ampersand($module['url']) ?>" title="<?= specialchars($GLOBALS['TL_LANG']['MSC']['seo_serp_module.fix']) ?>"><?= $GLOBALS['TL_LANG']['MSC']['seo_serp_module.fix'] ?></a></p>
-                        <?php endif; ?>
+                                        <?php if ($test['result']['warnings']): ?>
+                                            <?= sprintf((($test['result']['warnings'] === 1) ? $GLOBALS['TL_LANG']['MSC']['seo_serp_module.warning'] : $GLOBALS['TL_LANG']['MSC']['seo_serp_module.warnings']), $test['result']['warnings']) ?>
+                                        <?php endif; ?>
 
-                        <?php if (!$module['tests']['errors'] && !$module['tests']['warnings']): ?>
-                            <p class="tl_confirm"><?= $GLOBALS['TL_LANG']['MSC']['seo_serp_module.clear'] ?></p>
-                        <?php endif; ?>
+                                        <a href="<?= ampersand($test['url']) ?>" title="<?= specialchars($GLOBALS['TL_LANG']['MSC']['seo_serp_module.fix']) ?>"><?= $GLOBALS['TL_LANG']['MSC']['seo_serp_module.fix'] ?></a>
+                                    </span>
+
+                                    <?php if ($test['reference']): ?>
+                                        <span class="reference"><?= $test['reference'] ?></span>
+                                    <?php endif; ?>
+                                </p>
+                            <?php endif; ?>
+
+                            <?php if (!$test['result']['errors'] && !$test['result']['warnings']): ?>
+                                <p class="tl_confirm">
+                                    <span class="status"><?= $GLOBALS['TL_LANG']['MSC']['seo_serp_module.clear'] ?></span>
+                                </p>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             <?php endforeach; ?>

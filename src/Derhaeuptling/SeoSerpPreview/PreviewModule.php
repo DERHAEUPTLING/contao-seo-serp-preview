@@ -20,6 +20,7 @@ use Contao\Database;
 use Contao\Input;
 use Contao\Session;
 use Contao\System;
+use Database\Result;
 use Derhaeuptling\SeoSerpPreview\Test\Exception\ErrorException;
 use Derhaeuptling\SeoSerpPreview\Test\Exception\WarningException;
 use Derhaeuptling\SeoSerpPreview\Test\TestInterface;
@@ -71,10 +72,11 @@ class PreviewModule extends BackendModule
     /**
      * Redirect the user to given module
      *
-     * @param string $module
+     * @param string $target
      */
-    protected function redirectToModule($module)
+    protected function redirectToModule($target)
     {
+        list ($module, $params) = trimsplit('|', $target);
         $modules = $this->getModules();
 
         if (!isset($modules[$module])) {
@@ -88,8 +90,13 @@ class PreviewModule extends BackendModule
             $session['filter'][$table][AbstractHandler::$filterName] = AbstractHandler::getAvailableFilters()[0];
         }
 
+        // Decode the params
+        if ($params) {
+            $params = '&'.base64_decode($params);
+        }
+
         Session::getInstance()->setData($session);
-        Controller::redirect('contao/main.php?do='.$module.'&'.AbstractHandler::$serpParamName.'=1');
+        Controller::redirect('contao/main.php?do='.$module.$params.'&'.AbstractHandler::$serpParamName.'=1');
     }
 
     /**
@@ -108,9 +115,7 @@ class PreviewModule extends BackendModule
 
             // Run the tests
             foreach ($module['tables'] as $table) {
-                foreach ($this->runTests($table) as $test => $count) {
-                    $tests[$test] += $count;
-                }
+                $tests = array_merge($tests, $this->runTestsForTable($name, $table));
             }
 
             $return[] = [
@@ -126,17 +131,80 @@ class PreviewModule extends BackendModule
     }
 
     /**
-     * Run the tests on a table
+     * Run the tests for given table
      *
+     * @param string $module
      * @param string $table
      *
      * @return array
      */
-    protected function runTests($table)
+    protected function runTestsForTable($module, $table)
+    {
+        $db     = Database::getInstance();
+        $return = [];
+
+        switch ($table) {
+            case 'tl_calendar_events':
+                $calendars = $db->execute("SELECT id, title FROM tl_calendar ORDER BY title");
+
+                while ($calendars->next()) {
+                    $return[] = [
+                        'url'       => Backend::addToUrl(
+                            $this->redirectParamName.'='.$module.'|'.base64_encode(
+                                'table='.$table.'&id='.$calendars->id
+                            )
+                        ),
+                        'reference' => $calendars->title,
+                        'result'    => $this->runTests(
+                            $table,
+                            $db->prepare("SELECT * FROM tl_calendar_events WHERE pid=?")->execute($calendars->id)
+                        ),
+                    ];
+                }
+                break;
+
+            case 'tl_news':
+                $archives = $db->execute("SELECT id, title FROM tl_news_archive ORDER BY title");
+
+                while ($archives->next()) {
+                    $return[] = [
+                        'url'       => Backend::addToUrl(
+                            $this->redirectParamName.'='.$module.'|'.base64_encode(
+                                'table='.$table.'&id='.$archives->id
+                            )
+                        ),
+                        'reference' => $archives->title,
+                        'result'    => $this->runTests(
+                            $table,
+                            $db->prepare("SELECT * FROM tl_news WHERE pid=?")->execute($archives->id)
+                        ),
+                    ];
+                }
+                break;
+
+            case 'tl_page':
+                $return[] = [
+                    'url'    => Backend::addToUrl($this->redirectParamName.'='.$module),
+                    'result' => $this->runTests($table, $db->execute("SELECT * FROM tl_page")),
+                ];
+                break;
+        }
+
+        return $return;
+    }
+
+    /**
+     * Run the tests on a table
+     *
+     * @param string $table
+     * @param Result $records
+     *
+     * @return array
+     */
+    protected function runTests($table, Result $records)
     {
         System::loadLanguageFile('seo_serp_tests');
-        $records = Database::getInstance()->execute("SELECT * FROM ".$table);
-        $result  = ['errors' => 0, 'warnings' => 0];
+        $result = ['errors' => 0, 'warnings' => 0];
 
         /** @var TestInterface $test */
         foreach (TestsManager::getAll() as $test) {
