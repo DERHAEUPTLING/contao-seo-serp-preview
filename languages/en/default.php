@@ -29,3 +29,8 @@ $GLOBALS['TL_LANG']['MSC']['seo_serp_tests.filterRef'] = [
     'errors'   => 'Errors',
     'warnings' => 'Warnings',
 ];
+
+/**
+ * SERP status
+ */
+$GLOBALS['TL_LANG']['MSC']['seo_serp_status.fixErrors'] = 'fix errors';

@@ -67,6 +67,10 @@ class PreviewModule extends BackendModule
 
             $this->Template->modules = $this->generateModules($modules);
         }
+
+        // Rebuild the cache in status manager
+        $statusManager = new StatusManager();
+        $statusManager->rebuildCache();
     }
 
     /**

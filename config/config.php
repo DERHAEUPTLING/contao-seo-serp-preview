@@ -25,6 +25,11 @@ $GLOBALS['BE_MOD']['content']['seo_serp_preview'] = [
 $GLOBALS['BE_FFL']['seoSerpPreview'] = 'Derhaeuptling\SeoSerpPreview\PreviewWidget';
 
 /**
+ * Hooks
+ */
+$GLOBALS['TL_HOOKS']['getUserNavigation'][] = ['Derhaeuptling\SeoSerpPreview\StatusManager', 'setMenuStatus'];
+
+/**
  * SEO SERP Tests
  */
 \Derhaeuptling\SeoSerpPreview\TestsManager::add('description', 'Derhaeuptling\SeoSerpPreview\Test\DescriptionTest');

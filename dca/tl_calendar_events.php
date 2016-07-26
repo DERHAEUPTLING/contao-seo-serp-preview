@@ -19,6 +19,11 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['config']['onload_callback'][] = [
     'initialize',
 ];
 
+$GLOBALS['TL_DCA']['tl_calendar_events']['config']['onsubmit_callback'][] = [
+    'Derhaeuptling\SeoSerpPreview\StatusManager',
+    'rebuildCache',
+];
+
 /**
  * Extend palettes
  */

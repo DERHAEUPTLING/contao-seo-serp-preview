@@ -33,7 +33,7 @@ abstract class AbstractHandler
     protected $table;
 
     /**
-     * Data contaioner
+     * Data container
      * @var DataContainer
      */
     protected $dc;

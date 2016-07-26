@@ -19,6 +19,11 @@ $GLOBALS['TL_DCA']['tl_news']['config']['onload_callback'][] = [
     'initialize',
 ];
 
+$GLOBALS['TL_DCA']['tl_news']['config']['onsubmit_callback'][] = [
+    'Derhaeuptling\SeoSerpPreview\StatusManager',
+    'rebuildCache',
+];
+
 /**
  * Extend palettes
  */
