@@ -16,7 +16,7 @@
                     <div class="seo-serp-test-messages">
                         <?php foreach ($module['tests'] as $test): ?>
                             <?php if ($test['result']['warnings'] || $test['result']['errors']): ?>
-                                <p class="<?php if ($test['result']['errors']): ?>seo-serp-test-error<?php else: ?>seo-serp-test-warning<?php endif; ?>">
+                                <a href="<?= ampersand($test['url']) ?>" class="wrapper <?php if ($test['result']['errors']): ?>seo-serp-test-error<?php else: ?>seo-serp-test-warning<?php endif; ?>">
                                     <span class="status">
                                         <?php if ($test['result']['errors']): ?>
                                             <?= sprintf((($test['result']['errors'] === 1) ? $GLOBALS['TL_LANG']['MSC']['seo_serp_module.error'] : $GLOBALS['TL_LANG']['MSC']['seo_serp_module.errors']), $test['result']['errors']) ?>
@@ -25,18 +25,16 @@
                                         <?php if ($test['result']['warnings']): ?>
                                             <?= sprintf((($test['result']['warnings'] === 1) ? $GLOBALS['TL_LANG']['MSC']['seo_serp_module.warning'] : $GLOBALS['TL_LANG']['MSC']['seo_serp_module.warnings']), $test['result']['warnings']) ?>
                                         <?php endif; ?>
-
-                                        <a href="<?= ampersand($test['url']) ?>" title="<?= specialchars($GLOBALS['TL_LANG']['MSC']['seo_serp_module.fix']) ?>"><?= $GLOBALS['TL_LANG']['MSC']['seo_serp_module.fix'] ?></a>
                                     </span>
 
                                     <?php if ($test['reference']): ?>
                                         <span class="reference"><?= $test['reference'] ?></span>
                                     <?php endif; ?>
-                                </p>
+                                </a>
                             <?php endif; ?>
 
                             <?php if (!$test['result']['errors'] && !$test['result']['warnings']): ?>
-                                <p class="tl_confirm">
+                                <p class="tl_confirm wrapper">
                                     <span class="status"><?= $GLOBALS['TL_LANG']['MSC']['seo_serp_module.clear'] ?></span>
                                 </p>
                             <?php endif; ?>

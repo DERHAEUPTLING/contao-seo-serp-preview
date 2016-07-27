@@ -21,4 +21,3 @@ $GLOBALS['TL_LANG']['MSC']['seo_serp_module.errors']    = 'There are %s errors.'
 $GLOBALS['TL_LANG']['MSC']['seo_serp_module.warning']   = 'There is %s warning.';
 $GLOBALS['TL_LANG']['MSC']['seo_serp_module.warnings']  = 'There are %s warnings.';
 $GLOBALS['TL_LANG']['MSC']['seo_serp_module.clear']     = 'There are no errors or warnings.';
-$GLOBALS['TL_LANG']['MSC']['seo_serp_module.fix']       = 'Fix them!';

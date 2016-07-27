@@ -17,35 +17,29 @@
     font-weight: bold;
 }
 
-.seo-serp-module .module p {
+.seo-serp-module .module .wrapper {
+    display: block;
     margin-top: 0;
     margin-bottom: 5px;
-    padding: 0 !important;
 }
 
-.seo-serp-module .module p:last-child {
+.seo-serp-module .module .wrapper:last-child {
     margin-bottom: 0;
 }
 
-.seo-serp-module .module p:after {
+.seo-serp-module .module .wrapper:after {
     content: "";
     display: table;
     clear: both;
 }
 
-.seo-serp-module .module p span {
-    padding: 4px 5px 5px 5px;
-}
-
-.seo-serp-module .module p span.status {
+.seo-serp-module .module .wrapper .status {
     float: left;
-    padding-left: 25px;
 }
 
-.seo-serp-module .module p span.reference {
+.seo-serp-module .module .wrapper .reference {
     float: right;
-    background: #444;
-    color: #fff;
+    color: #444;
 }
 
 .seo-serp-module .seo-serp-test-messages a {
