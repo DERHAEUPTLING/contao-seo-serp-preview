@@ -17,15 +17,7 @@
                         <?php foreach ($module['tests'] as $test): ?>
                             <?php if ($test['result']['warnings'] || $test['result']['errors']): ?>
                                 <a href="<?= ampersand($test['url']) ?>" class="wrapper <?php if ($test['result']['errors']): ?>seo-serp-test-error<?php else: ?>seo-serp-test-warning<?php endif; ?>">
-                                    <span class="status">
-                                        <?php if ($test['result']['errors']): ?>
-                                            <?= sprintf((($test['result']['errors'] === 1) ? $GLOBALS['TL_LANG']['MSC']['seo_serp_module.error'] : $GLOBALS['TL_LANG']['MSC']['seo_serp_module.errors']), $test['result']['errors']) ?>
-                                        <?php endif; ?>
-
-                                        <?php if ($test['result']['warnings']): ?>
-                                            <?= sprintf((($test['result']['warnings'] === 1) ? $GLOBALS['TL_LANG']['MSC']['seo_serp_module.warning'] : $GLOBALS['TL_LANG']['MSC']['seo_serp_module.warnings']), $test['result']['warnings']) ?>
-                                        <?php endif; ?>
-                                    </span>
+                                    <span class="status"><?= $test['message'] ?></span>
 
                                     <?php if ($test['reference']): ?>
                                         <span class="reference"><?= $test['reference'] ?></span>
@@ -35,7 +27,7 @@
 
                             <?php if (!$test['result']['errors'] && !$test['result']['warnings']): ?>
                                 <p class="tl_confirm wrapper">
-                                    <span class="status"><?= $GLOBALS['TL_LANG']['MSC']['seo_serp_module.clear'] ?></span>
+                                    <span class="status"><?= $test['message'] ?></span>
                                 </p>
                             <?php endif; ?>
                         <?php endforeach; ?>

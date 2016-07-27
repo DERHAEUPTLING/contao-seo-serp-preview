@@ -152,6 +152,11 @@ class PreviewModule extends BackendModule
                 $calendars = $db->execute("SELECT id, title FROM tl_calendar ORDER BY title");
 
                 while ($calendars->next()) {
+                    $test = $this->runTests(
+                        $table,
+                        $db->prepare("SELECT * FROM tl_calendar_events WHERE pid=?")->execute($calendars->id)
+                    );
+
                     $return[] = [
                         'url'       => Backend::addToUrl(
                             $this->redirectParamName.'='.$module.'|'.base64_encode(
@@ -159,10 +164,8 @@ class PreviewModule extends BackendModule
                             )
                         ),
                         'reference' => $calendars->title,
-                        'result'    => $this->runTests(
-                            $table,
-                            $db->prepare("SELECT * FROM tl_calendar_events WHERE pid=?")->execute($calendars->id)
-                        ),
+                        'message'   => $this->generateTestMessage($test),
+                        'result'    => $test,
                     ];
                 }
                 break;
@@ -171,6 +174,11 @@ class PreviewModule extends BackendModule
                 $archives = $db->execute("SELECT id, title FROM tl_news_archive ORDER BY title");
 
                 while ($archives->next()) {
+                    $test = $this->runTests(
+                        $table,
+                        $db->prepare("SELECT * FROM tl_news WHERE pid=?")->execute($archives->id)
+                    );
+
                     $return[] = [
                         'url'       => Backend::addToUrl(
                             $this->redirectParamName.'='.$module.'|'.base64_encode(
@@ -178,23 +186,81 @@ class PreviewModule extends BackendModule
                             )
                         ),
                         'reference' => $archives->title,
-                        'result'    => $this->runTests(
-                            $table,
-                            $db->prepare("SELECT * FROM tl_news WHERE pid=?")->execute($archives->id)
-                        ),
+                        'message'   => $this->generateTestMessage($test),
+                        'result'    => $test,
                     ];
                 }
                 break;
 
             case 'tl_page':
+                $test = $this->runTests($table, $db->execute("SELECT * FROM tl_page"));
+
                 $return[] = [
-                    'url'    => Backend::addToUrl($this->redirectParamName.'='.$module),
-                    'result' => $this->runTests($table, $db->execute("SELECT * FROM tl_page")),
+                    'url'     => Backend::addToUrl($this->redirectParamName.'='.$module),
+                    'message' => $this->generateTestMessage($test),
+                    'result'  => $test,
                 ];
                 break;
         }
 
         return $return;
+    }
+
+    /**
+     * Generate the test message
+     *
+     * @param array $test
+     *
+     * @return string
+     */
+    protected function generateTestMessage(array $test)
+    {
+        $message  = '';
+        $errors   = $test['errors'];
+        $warnings = $test['warnings'];
+
+        // No errors, no warnings
+        if ($errors === 0 && $warnings === 0) {
+            $message = $GLOBALS['TL_LANG']['MSC']['seo_serp_module.clear'];
+        }
+
+        // There are errors
+        if ($errors > 0) {
+            $message = sprintf(
+                '%s %s',
+                ($errors === 1) ? $GLOBALS['TL_LANG']['MSC']['seo_serp_module.single'] : $GLOBALS['TL_LANG']['MSC']['seo_serp_module.multiple'],
+                sprintf(
+                    ($errors === 1) ? $GLOBALS['TL_LANG']['MSC']['seo_serp_module.error'] : $GLOBALS['TL_LANG']['MSC']['seo_serp_module.errors'],
+                    $errors
+                )
+            );
+        }
+
+        // There are warnings
+        if ($warnings > 0) {
+            $chunk = sprintf(
+                ($warnings === 1) ? $GLOBALS['TL_LANG']['MSC']['seo_serp_module.warning'] : $GLOBALS['TL_LANG']['MSC']['seo_serp_module.warnings'],
+                $warnings
+            );
+
+            // Append text to the existing message
+            if (strlen($message) > 0) {
+                $message = sprintf(
+                    '%s %s %s',
+                    $message,
+                    $GLOBALS['TL_LANG']['MSC']['seo_serp_module.and'],
+                    $chunk
+                );
+            } else {
+                $message = sprintf(
+                    '%s %s',
+                    ($warnings === 1) ? $GLOBALS['TL_LANG']['MSC']['seo_serp_module.single'] : $GLOBALS['TL_LANG']['MSC']['seo_serp_module.multiple'],
+                    $chunk
+                );
+            }
+        }
+
+        return $message.'.';
     }
 
     /**
