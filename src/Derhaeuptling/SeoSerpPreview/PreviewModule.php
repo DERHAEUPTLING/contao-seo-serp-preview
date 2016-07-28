@@ -54,7 +54,7 @@ class PreviewModule extends BackendModule
     protected function compile()
     {
         if (Input::get($this->redirectParamName)) {
-            $this->redirectToModule(Input::get($this->redirectParamName));
+            $this->redirectToModule(Input::get($this->redirectParamName, true));
         }
 
         System::loadLanguageFile('seo_serp_module');
