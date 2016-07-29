@@ -8,15 +8,16 @@
     <?php if ($this->modules): ?>
         <div class="modules">
             <?php foreach ($this->modules as $module): ?>
-                <div class="module">
+                <div class="module<?php if (!$module['hasAccess']): ?> no-permission<?php endif; ?>">
                     <div class="name">
-                        <a href="<?= ampersand($module['url']) ?>" title="<?= specialchars($module['label']) ?>" class="navigation <?= $module['name'] ?>"<?php if ($module['icon']): ?> style="background-image:url('<?= $module['icon'] ?>')"<?php endif; ?>><?= $module['label'] ?></a>
+                        <a href="<?= ampersand($module['url']) ?>" title="<?= specialchars($module['label']) ?>" class="navigation <?= $module['name'] ?>"<?php if ($module['icon']): ?> style="background-image:url('<?= $module['icon'] ?>')"<?php endif; ?><?php if (!$module['hasAccess']): ?> onclick="return false;"<?php endif; ?>><?= $module['label'] ?></a>
+                        <?php if (!$module['hasAccess']): ?><span><?= $GLOBALS['TL_LANG']['MSC']['seo_serp_module.noPermission'] ?></span><?php endif; ?>
                     </div>
 
                     <div class="seo-serp-test-messages">
                         <?php foreach ($module['tests'] as $test): ?>
                             <?php if ($test['result']['warnings'] || $test['result']['errors']): ?>
-                                <a href="<?= ampersand($test['url']) ?>" class="wrapper <?php if ($test['result']['errors']): ?>seo-serp-test-error<?php else: ?>seo-serp-test-warning<?php endif; ?>">
+                                <a href="<?= ampersand($test['url']) ?>" class="wrapper <?php if ($test['result']['errors']): ?>seo-serp-test-error<?php else: ?>seo-serp-test-warning<?php endif; ?><?php if (!$test['hasAccess']): ?> no-permission<?php endif; ?>"<?php if (!$module['hasAccess'] || !$test['hasAccess']): ?> onclick="return false;"<?php endif; ?>>
                                     <span class="status"><?= $test['message'] ?></span>
 
                                     <?php if ($test['reference']): ?>

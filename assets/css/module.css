@@ -17,6 +17,10 @@
     font-weight: bold;
 }
 
+.seo-serp-module .module .name span {
+    font-style: italic;
+}
+
 .seo-serp-module .module .wrapper {
     display: block;
     margin-top: 0;
@@ -52,4 +56,14 @@
 
 .seo-serp-module .seo-serp-test-messages .seo-serp-test-warning a {
     color: #c58204;
+}
+
+.seo-serp-module .no-permission {
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+}
+
+.seo-serp-module a.no-permission,
+.seo-serp-module .no-permission a {
+    cursor: not-allowed;
 }

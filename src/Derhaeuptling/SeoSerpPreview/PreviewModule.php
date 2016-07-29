@@ -15,6 +15,7 @@ namespace Derhaeuptling\SeoSerpPreview;
 
 use Contao\Backend;
 use Contao\BackendModule;
+use Contao\BackendUser;
 use Contao\Controller;
 use Contao\Database;
 use Contao\Input;
@@ -123,11 +124,12 @@ class PreviewModule extends BackendModule
             }
 
             $return[] = [
-                'name'  => $name,
-                'label' => $GLOBALS['TL_LANG']['MOD'][$name][0],
-                'url'   => Backend::addToUrl($this->redirectParamName.'='.$name),
-                'icon'  => $module['icon'],
-                'tests' => $tests,
+                'name'      => $name,
+                'label'     => $GLOBALS['TL_LANG']['MOD'][$name][0],
+                'url'       => Backend::addToUrl($this->redirectParamName.'='.$name),
+                'icon'      => $module['icon'],
+                'hasAccess' => $this->checkModulePermission($name),
+                'tests'     => $tests,
             ];
         }
 
@@ -145,6 +147,7 @@ class PreviewModule extends BackendModule
     protected function runTestsForTable($module, $table)
     {
         $db     = Database::getInstance();
+        $user   = BackendUser::getInstance();
         $return = [];
 
         switch ($table) {
@@ -166,6 +169,10 @@ class PreviewModule extends BackendModule
                         'reference' => $calendars->title,
                         'message'   => $this->generateTestMessage($test),
                         'result'    => $test,
+                        'hasAccess' => $user->isAdmin || (is_array($user->calendars) && in_array(
+                                    $calendars->id,
+                                    $user->calendars
+                                )),
                     ];
                 }
                 break;
@@ -188,6 +195,10 @@ class PreviewModule extends BackendModule
                         'reference' => $archives->title,
                         'message'   => $this->generateTestMessage($test),
                         'result'    => $test,
+                        'hasAccess' => $user->isAdmin || (is_array($user->news) && in_array(
+                                    $archives->id,
+                                    $user->news
+                                )),
                     ];
                 }
                 break;
@@ -196,9 +207,10 @@ class PreviewModule extends BackendModule
                 $test = $this->runTests($table, $db->execute("SELECT * FROM tl_page"));
 
                 $return[] = [
-                    'url'     => Backend::addToUrl($this->redirectParamName.'='.$module),
-                    'message' => $this->generateTestMessage($test),
-                    'result'  => $test,
+                    'url'       => Backend::addToUrl($this->redirectParamName.'='.$module),
+                    'message'   => $this->generateTestMessage($test),
+                    'result'    => $test,
+                    'hasAccess' => true,
                 ];
                 break;
         }
@@ -325,5 +337,23 @@ class PreviewModule extends BackendModule
         }
 
         return $return;
+    }
+
+    /**
+     * Check the module permission
+     *
+     * @param string $module
+     *
+     * @return bool
+     */
+    protected function checkModulePermission($module)
+    {
+        $user = BackendUser::getInstance();
+
+        if ($user->isAdmin) {
+            return true;
+        }
+
+        return $user->hasAccess($module, 'modules');
     }
 }
