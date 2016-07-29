@@ -46,6 +46,16 @@
     color: #444;
 }
 
+.seo-serp-module .module ul.notes {
+    margin-bottom: 10px;
+    padding-left: 25px;
+    list-style-type: square;
+}
+
+.seo-serp-module .module ul.notes li {
+    list-style: square;
+}
+
 .seo-serp-module .seo-serp-test-messages a {
     text-decoration: underline;
 }

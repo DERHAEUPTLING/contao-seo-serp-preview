@@ -25,3 +25,4 @@ $GLOBALS['TL_LANG']['MSC']['seo_serp_module.single']       = 'There is';
 $GLOBALS['TL_LANG']['MSC']['seo_serp_module.multiple']     = 'There are';
 $GLOBALS['TL_LANG']['MSC']['seo_serp_module.and']          = 'and';
 $GLOBALS['TL_LANG']['MSC']['seo_serp_module.noPermission'] = '(no permission to access this module)';
+$GLOBALS['TL_LANG']['MSC']['seo_serp_module.pagesNote']    = 'There may be some pages with errors or warnings that you do not have access to.';

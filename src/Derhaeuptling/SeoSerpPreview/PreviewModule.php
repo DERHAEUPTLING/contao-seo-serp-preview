@@ -212,13 +212,20 @@ class PreviewModule extends BackendModule
                 $pages = $db->execute("SELECT * FROM tl_page");
 
                 if ($pages->numRows) {
-                    $test = $this->runTests($table, $pages);
+                    $test  = $this->runTests($table, $pages);
+                    $notes = [];
+
+                    // Add the note if the user is not admin and there are some errors or warnings
+                    if (!$user->isAdmin && ($test['errors'] > 0 || $test['warnings'] > 0)) {
+                        $notes[] = $GLOBALS['TL_LANG']['MSC']['seo_serp_module.pagesNote'];
+                    }
 
                     $return[] = [
                         'url'       => Backend::addToUrl($this->redirectParamName.'='.$module),
                         'message'   => $this->generateTestMessage($test),
                         'result'    => $test,
                         'hasAccess' => true,
+                        'notes'     => $notes,
                     ];
                 }
                 break;

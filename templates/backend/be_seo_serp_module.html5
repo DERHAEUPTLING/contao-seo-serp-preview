@@ -16,6 +16,14 @@
 
                     <div class="seo-serp-test-messages">
                         <?php foreach ($module['tests'] as $test): ?>
+                            <?php if ($test['notes']): ?>
+                                <ul class="notes">
+                                    <?php foreach ($test['notes'] as $note): ?>
+                                        <li><?= $note ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            <?php endif; ?>
+
                             <?php if ($test['result']['warnings'] || $test['result']['errors']): ?>
                                 <a href="<?= ampersand($test['url']) ?>" class="wrapper <?php if ($test['result']['errors']): ?>seo-serp-test-error<?php else: ?>seo-serp-test-warning<?php endif; ?><?php if (!$test['hasAccess']): ?> no-permission<?php endif; ?>"<?php if (!$module['hasAccess'] || !$test['hasAccess']): ?> onclick="return false;"<?php endif; ?>>
                                     <span class="status"><?= $test['message'] ?></span>
