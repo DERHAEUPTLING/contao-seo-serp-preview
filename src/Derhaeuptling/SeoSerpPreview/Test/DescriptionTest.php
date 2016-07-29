@@ -13,6 +13,7 @@
 
 namespace Derhaeuptling\SeoSerpPreview\Test;
 
+use Contao\Date;
 use Derhaeuptling\SeoSerpPreview\Test\Exception\ErrorException;
 use Derhaeuptling\SeoSerpPreview\Test\Exception\WarningException;
 
@@ -55,7 +56,14 @@ class DescriptionTest implements TestInterface
                 break;
 
             case 'tl_page':
-                if ($data['type'] === 'regular') {
+                $time = Date::floorToMinute();
+
+                if ($data['type'] === 'regular'
+                    && $data['robots'] !== 'noindex,nofollow'
+                    && $data['published']
+                    && (!$data['start'] || $data['start'] <= $time)
+                    && (!$data['stop'] || $data['stop'] > $time)
+                ) {
                     $this->check($data['description']);
                 }
                 break;
