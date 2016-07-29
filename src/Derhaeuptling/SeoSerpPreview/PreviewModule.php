@@ -123,6 +123,11 @@ class PreviewModule extends BackendModule
                 $tests = array_merge($tests, $this->runTestsForTable($name, $table));
             }
 
+            // Skip modules without tests
+            if (count($tests) < 1) {
+                continue;
+            }
+
             $return[] = [
                 'name'      => $name,
                 'label'     => $GLOBALS['TL_LANG']['MOD'][$name][0],
@@ -204,14 +209,18 @@ class PreviewModule extends BackendModule
                 break;
 
             case 'tl_page':
-                $test = $this->runTests($table, $db->execute("SELECT * FROM tl_page"));
+                $pages = $db->execute("SELECT * FROM tl_page");
 
-                $return[] = [
-                    'url'       => Backend::addToUrl($this->redirectParamName.'='.$module),
-                    'message'   => $this->generateTestMessage($test),
-                    'result'    => $test,
-                    'hasAccess' => true,
-                ];
+                if ($pages->numRows) {
+                    $test = $this->runTests($table, $pages);
+
+                    $return[] = [
+                        'url'       => Backend::addToUrl($this->redirectParamName.'='.$module),
+                        'message'   => $this->generateTestMessage($test),
+                        'result'    => $test,
+                        'hasAccess' => true,
+                    ];
+                }
                 break;
         }
 
