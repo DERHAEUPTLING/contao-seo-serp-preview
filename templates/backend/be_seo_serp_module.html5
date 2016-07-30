@@ -37,6 +37,10 @@
                             <?php if (!$test['result']['errors'] && !$test['result']['warnings']): ?>
                                 <p class="tl_confirm wrapper">
                                     <span class="status"><?= $test['message'] ?></span>
+
+                                    <?php if ($test['reference']): ?>
+                                        <span class="reference"><?= $test['reference'] ?></span>
+                                    <?php endif; ?>
                                 </p>
                             <?php endif; ?>
                         <?php endforeach; ?>
