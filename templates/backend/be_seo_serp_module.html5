@@ -15,35 +15,31 @@
                     </div>
 
                     <div class="seo-serp-test-messages">
-                        <?php foreach ($module['tests'] as $test): ?>
-                            <?php if ($test['notes']): ?>
-                                <ul class="notes">
-                                    <?php foreach ($test['notes'] as $note): ?>
-                                        <li><?= $note ?></li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            <?php endif; ?>
+                        <?php if ($module['success']): ?>
+                            <p class="tl_confirm wrapper">
+                                <span class="status"><?= $module['tests'][0]['message'] ?></span>
+                            </p>
+                        <?php else: ?>
+                            <?php foreach ($module['tests'] as $test): ?>
+                                <?php if ($test['notes']): ?>
+                                    <ul class="notes">
+                                        <?php foreach ($test['notes'] as $note): ?>
+                                            <li><?= $note ?></li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                <?php endif; ?>
 
-                            <?php if ($test['result']['warnings'] || $test['result']['errors']): ?>
-                                <a href="<?= ampersand($test['url']) ?>" class="wrapper <?php if ($test['result']['errors']): ?>seo-serp-test-error<?php else: ?>seo-serp-test-warning<?php endif; ?><?php if (!$test['hasAccess']): ?> no-permission<?php endif; ?>"<?php if (!$module['hasAccess'] || !$test['hasAccess']): ?> onclick="return false;"<?php endif; ?>>
-                                    <span class="status"><?= $test['message'] ?></span>
+                                <?php if ($test['result']['warnings'] || $test['result']['errors']): ?>
+                                    <a href="<?= ampersand($test['url']) ?>" class="wrapper <?php if ($test['result']['errors']): ?>seo-serp-test-error<?php else: ?>seo-serp-test-warning<?php endif; ?><?php if (!$test['hasAccess']): ?> no-permission<?php endif; ?>"<?php if (!$module['hasAccess'] || !$test['hasAccess']): ?> onclick="return false;"<?php endif; ?>>
+                                        <span class="status"><?= $test['message'] ?></span>
 
-                                    <?php if ($test['reference']): ?>
-                                        <span class="reference"><?= $test['reference'] ?></span>
-                                    <?php endif; ?>
-                                </a>
-                            <?php endif; ?>
-
-                            <?php if (!$test['result']['errors'] && !$test['result']['warnings']): ?>
-                                <p class="tl_confirm wrapper">
-                                    <span class="status"><?= $test['message'] ?></span>
-
-                                    <?php if ($test['reference']): ?>
-                                        <span class="reference"><?= $test['reference'] ?></span>
-                                    <?php endif; ?>
-                                </p>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
+                                        <?php if ($test['reference']): ?>
+                                            <span class="reference"><?= $test['reference'] ?></span>
+                                        <?php endif; ?>
+                                    </a>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </div>
                 </div>
             <?php endforeach; ?>

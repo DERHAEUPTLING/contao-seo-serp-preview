@@ -128,6 +128,16 @@ class PreviewModule extends BackendModule
                 continue;
             }
 
+            $success = true;
+
+            // Check if there is a test that failed
+            foreach ($tests as $test) {
+                if ($test['result']['errors'] > 0 || $test['result']['warnings'] > 0) {
+                    $success = false;
+                    break;
+                }
+            }
+
             $return[] = [
                 'name'      => $name,
                 'label'     => $GLOBALS['TL_LANG']['MOD'][$name][0],
@@ -135,6 +145,7 @@ class PreviewModule extends BackendModule
                 'icon'      => $module['icon'],
                 'hasAccess' => $this->checkModulePermission($name),
                 'tests'     => $tests,
+                'success'   => $success,
             ];
         }
 
