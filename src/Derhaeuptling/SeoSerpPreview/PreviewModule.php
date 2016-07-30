@@ -212,26 +212,28 @@ class PreviewModule extends BackendModule
                 $pages = $db->execute("SELECT * FROM tl_page");
 
                 if ($pages->numRows) {
-                    $notes     = [];
-                    $rootCount = 0;
-                    $userCount = 0;
-
-                    // Count the total root pages and thoes the user has access to
-                    while ($pages->next()) {
-                        if ($pages->type === 'root') {
-                            $rootCount++;
-
-                            if (in_array($pages->id, (array)$user->pagemounts)) {
-                                $userCount++;
-                            }
-                        }
-                    }
-
-                    $test = $this->runTests($table, $pages->reset());
+                    $notes = [];
+                    $test  = $this->runTests($table, $pages->reset());
 
                     // Add the note if the user is not admin and there are some errors or warnings
-                    if (!$user->isAdmin && $userCount < $rootCount && ($test['errors'] > 0 || $test['warnings'] > 0)) {
-                        $notes[] = $GLOBALS['TL_LANG']['MSC']['seo_serp_module.pagesNote'];
+                    if (!$user->isAdmin && ($test['errors'] > 0 || $test['warnings'] > 0)) {
+                        $rootCount = 0;
+                        $userCount = 0;
+
+                        // Count the total root pages and thoes the user has access to
+                        while ($pages->next()) {
+                            if ($pages->type === 'root') {
+                                $rootCount++;
+
+                                if (in_array($pages->id, (array)$user->pagemounts)) {
+                                    $userCount++;
+                                }
+                            }
+                        }
+
+                        if ($userCount < $rootCount) {
+                            $notes[] = $GLOBALS['TL_LANG']['MSC']['seo_serp_module.pagesNote'];
+                        }
                     }
 
                     $return[] = [
