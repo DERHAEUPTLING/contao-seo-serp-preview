@@ -81,6 +81,8 @@ class DescriptionTest implements TestInterface
      */
     private function check($value)
     {
+        $value = strip_tags(strip_insert_tags($value));
+
         // The description does not exist
         if (!$value) {
             throw new ErrorException($GLOBALS['TL_LANG']['SST']['test.description']['empty']);
