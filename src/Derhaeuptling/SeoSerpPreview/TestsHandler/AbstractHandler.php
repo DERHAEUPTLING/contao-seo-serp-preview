@@ -14,8 +14,10 @@
 namespace Derhaeuptling\SeoSerpPreview\TestsHandler;
 
 use Contao\BackendTemplate;
+use Contao\Controller;
 use Contao\Database;
 use Contao\DataContainer;
+use Contao\Environment;
 use Contao\Input;
 use Contao\Session;
 use Contao\System;
@@ -37,6 +39,12 @@ abstract class AbstractHandler
      * @var DataContainer
      */
     protected $dc;
+
+    /**
+     * Session name
+     * @var string
+     */
+    protected $sessionName = 'seo_serp_tests';
 
     /**
      * Filter name
@@ -64,11 +72,39 @@ abstract class AbstractHandler
         $this->table = $this->getTableName();
         $this->dc    = $dc;
 
+        // Enable or disable the analyzer
+        if (isset($_GET[self::$serpParamName])) {
+            Input::get(self::$serpParamName) ? static::enable() : static::disable();
+            Controller::redirect(
+                str_replace(
+                    '&'.self::$serpParamName.'='.Input::get(self::$serpParamName),
+                    '',
+                    Environment::get('request')
+                )
+            );
+        }
+
         $this->addGlobalOperations();
 
         if ($this->isEnabled()) {
             $this->initializeEnabled();
         }
+    }
+
+    /**
+     * Enable the analyzer
+     */
+    protected function enable()
+    {
+        Session::getInstance()->set($this->sessionName.'_'.$this->table, true);
+    }
+
+    /**
+     * Disable the analyzer
+     */
+    protected function disable()
+    {
+        Session::getInstance()->set($this->sessionName.'_'.$this->table, false);
     }
 
     /**
@@ -119,7 +155,7 @@ abstract class AbstractHandler
      */
     protected function isEnabled()
     {
-        return \Input::get(static::$serpParamName) ? true : false;
+        return Session::getInstance()->get($this->sessionName.'_'.$this->table) ? true : false;
     }
 
     /**
@@ -146,7 +182,7 @@ abstract class AbstractHandler
         // Set filter from user input
         if (Input::post('FORM_SUBMIT') === 'tl_filters') {
             if (Input::post(static::$filterName, true) !== 'tl_'.static::$filterName) {
-                $session['filter'][$this->table][static::$filterName] = \Input::post(static::$filterName, true);
+                $session['filter'][$this->table][static::$filterName] = Input::post(static::$filterName, true);
             } else {
                 unset($session['filter'][$this->table][static::$filterName]);
             }
