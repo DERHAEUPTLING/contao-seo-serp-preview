@@ -194,7 +194,9 @@ class PreviewModule extends BackendModule
                 break;
 
             case 'tl_news':
-                $archives = $db->execute("SELECT id, title FROM tl_news_archive ORDER BY title");
+                $archives = $db->execute(
+                    "SELECT id, title FROM tl_news_archive WHERE seo_serp_ignore='' ORDER BY title"
+                );
 
                 while ($archives->next()) {
                     $test = $this->runTests(

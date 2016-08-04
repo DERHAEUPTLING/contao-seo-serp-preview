@@ -49,7 +49,17 @@ class StatusManager
     public function getStatus()
     {
         foreach ($this->tables as $table) {
-            $records = Database::getInstance()->execute("SELECT * FROM ".$table);
+            switch ($table) {
+                case 'tl_news':
+                    $records = Database::getInstance()->execute(
+                        "SELECT * FROM tl_news WHERE pid IN (SELECT id FROM tl_news_archive WHERE seo_serp_ignore='')"
+                    );
+                    break;
+
+                default:
+                    $records = Database::getInstance()->execute("SELECT * FROM ".$table);
+                    break;
+            }
 
             while ($records->next()) {
                 try {
