@@ -11,7 +11,6 @@ SEO SERP Preview generates a preview of how Contao <b>pages</b>, <b>news</b> and
 
 The menu entry "SEO SERP" outlines missing entries.
 
-<br>
-
+<hr>
 by Martin Schwenzer [derhaeuptling.com](https://derhaeuptling.com/)
 
