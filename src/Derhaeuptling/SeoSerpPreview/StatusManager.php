@@ -49,6 +49,10 @@ class StatusManager
     public function getStatus()
     {
         foreach ($this->tables as $table) {
+            if (!Database::getInstance()->tableExists($table)) {
+                continue;
+            }
+
             switch ($table) {
                 case 'tl_news':
                     $records = Database::getInstance()->execute(
