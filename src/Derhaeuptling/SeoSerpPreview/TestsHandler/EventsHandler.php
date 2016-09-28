@@ -14,9 +14,33 @@
 namespace Derhaeuptling\SeoSerpPreview\TestsHandler;
 
 use Contao\Database;
+use Contao\DataContainer;
 
 class EventsHandler extends AbstractHandler
 {
+    /**
+     * Initialize the tests handler
+     *
+     * @param DataContainer|null $dc
+     */
+    public function initialize(DataContainer $dc = null)
+    {
+        if (CURRENT_ID) {
+            $calendar = Database::getInstance()->prepare("SELECT seo_serp_ignore FROM tl_calendar WHERE id=?")
+                ->limit(1)
+                ->execute(CURRENT_ID);
+
+            // Do not initialize handler if calendar is ignored
+            if ($calendar->seo_serp_ignore) {
+                unset($GLOBALS['TL_DCA']['tl_calendar_events']['fields']['seo_serp_preview']);
+
+                return;
+            }
+        }
+
+        parent::initialize($dc);
+    }
+
     /**
      * Get the table name
      *

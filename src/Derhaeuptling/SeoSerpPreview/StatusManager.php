@@ -60,6 +60,12 @@ class StatusManager
                     );
                     break;
 
+                case 'tl_calendar_events':
+                    $records = Database::getInstance()->execute(
+                        "SELECT * FROM tl_calendar_events WHERE pid IN (SELECT id FROM tl_calendar WHERE seo_serp_ignore='')"
+                    );
+                    break;
+
                 default:
                     $records = Database::getInstance()->execute("SELECT * FROM ".$table);
                     break;

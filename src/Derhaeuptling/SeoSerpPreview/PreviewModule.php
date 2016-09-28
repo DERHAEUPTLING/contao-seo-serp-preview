@@ -168,7 +168,7 @@ class PreviewModule extends BackendModule
 
         switch ($table) {
             case 'tl_calendar_events':
-                $calendars = $db->execute("SELECT id, title FROM tl_calendar ORDER BY title");
+                $calendars = $db->execute("SELECT id, title FROM tl_calendar WHERE seo_serp_ignore='' ORDER BY title");
 
                 while ($calendars->next()) {
                     $test = $this->runTests(
