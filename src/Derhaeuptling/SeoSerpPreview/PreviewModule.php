@@ -222,40 +222,45 @@ class PreviewModule extends BackendModule
                 break;
 
             case 'tl_page':
-                $pages = $db->execute("SELECT * FROM tl_page");
+                $rootIds = $db->execute("SELECT id FROM tl_page WHERE type='root' AND seo_serp_ignore=''");
+                $pageIds = $db->getChildRecords($rootIds->fetchEach('id'), 'tl_page');
 
-                if ($pages->numRows) {
-                    $notes = [];
-                    $test  = $this->runTests($table, $pages->reset());
+                if (count($pageIds) > 0) {
+                    $pages = $db->execute("SELECT * FROM tl_page WHERE id IN (".implode(',', $pageIds).")");
 
-                    // Add the note if the user is not admin and there are some errors or warnings
-                    if (!$user->isAdmin && ($test['errors'] > 0 || $test['warnings'] > 0)) {
-                        $rootCount = 0;
-                        $userCount = 0;
+                    if ($pages->numRows) {
+                        $notes = [];
+                        $test  = $this->runTests($table, $pages->reset());
 
-                        // Count the total root pages and thoes the user has access to
-                        while ($pages->next()) {
-                            if ($pages->type === 'root') {
-                                $rootCount++;
+                        // Add the note if the user is not admin and there are some errors or warnings
+                        if (!$user->isAdmin && ($test['errors'] > 0 || $test['warnings'] > 0)) {
+                            $rootCount = 0;
+                            $userCount = 0;
 
-                                if (in_array($pages->id, (array)$user->pagemounts)) {
-                                    $userCount++;
+                            // Count the total root pages and those the user has access to
+                            while ($pages->next()) {
+                                if ($pages->type === 'root') {
+                                    $rootCount++;
+
+                                    if (in_array($pages->id, (array)$user->pagemounts)) {
+                                        $userCount++;
+                                    }
                                 }
+                            }
+
+                            if ($userCount < $rootCount) {
+                                $notes[] = $GLOBALS['TL_LANG']['MSC']['seo_serp_module.pagesNote'];
                             }
                         }
 
-                        if ($userCount < $rootCount) {
-                            $notes[] = $GLOBALS['TL_LANG']['MSC']['seo_serp_module.pagesNote'];
-                        }
+                        $return[] = [
+                            'url'       => Backend::addToUrl($this->redirectParamName.'='.$module),
+                            'message'   => $this->generateTestMessage($test),
+                            'result'    => $test,
+                            'hasAccess' => true,
+                            'notes'     => $notes,
+                        ];
                     }
-
-                    $return[] = [
-                        'url'       => Backend::addToUrl($this->redirectParamName.'='.$module),
-                        'message'   => $this->generateTestMessage($test),
-                        'result'    => $test,
-                        'hasAccess' => true,
-                        'notes'     => $notes,
-                    ];
                 }
                 break;
         }

@@ -49,25 +49,38 @@ class StatusManager
     public function getStatus()
     {
         foreach ($this->tables as $table) {
-            if (!Database::getInstance()->tableExists($table)) {
+            $db = Database::getInstance();
+
+            if (!$db->tableExists($table)) {
                 continue;
             }
 
             switch ($table) {
                 case 'tl_news':
-                    $records = Database::getInstance()->execute(
+                    $records = $db->execute(
                         "SELECT * FROM tl_news WHERE pid IN (SELECT id FROM tl_news_archive WHERE seo_serp_ignore='')"
                     );
                     break;
 
                 case 'tl_calendar_events':
-                    $records = Database::getInstance()->execute(
+                    $records = $db->execute(
                         "SELECT * FROM tl_calendar_events WHERE pid IN (SELECT id FROM tl_calendar WHERE seo_serp_ignore='')"
                     );
                     break;
 
+                case 'tl_page':
+                    $rootIds = $db->execute("SELECT id FROM tl_page WHERE type='root' AND seo_serp_ignore=''");
+                    $pageIds = $db->getChildRecords($rootIds->fetchEach('id'), 'tl_page');
+
+                    if (count($pageIds) < 1) {
+                        return true;
+                    }
+
+                    $records = $db->execute("SELECT * FROM tl_page WHERE id IN (".implode(',', $pageIds).")");
+                    break;
+
                 default:
-                    $records = Database::getInstance()->execute("SELECT * FROM ".$table);
+                    $records = $db->execute("SELECT * FROM ".$table);
                     break;
             }
 

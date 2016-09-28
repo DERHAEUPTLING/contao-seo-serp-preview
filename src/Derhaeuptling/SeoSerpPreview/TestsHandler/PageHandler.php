@@ -15,12 +15,34 @@ namespace Derhaeuptling\SeoSerpPreview\TestsHandler;
 
 use Contao\Backend;
 use Contao\Database;
+use Contao\DataContainer;
 use Contao\Environment;
 use Contao\Input;
 use Contao\Session;
 
 class PageHandler extends AbstractHandler
 {
+    /**
+     * Initialize the tests handler
+     *
+     * @param DataContainer|null $dc
+     */
+    public function initialize(DataContainer $dc = null)
+    {
+        $pages = Database::getInstance()->prepare("SELECT id FROM tl_page WHERE type='root' AND seo_serp_ignore=''")
+            ->limit(1)
+            ->execute();
+
+        // Do not initialize handler if there are no pages to analyze
+        if (!$pages->numRows) {
+            unset($GLOBALS['TL_DCA']['tl_page']['fields']['seo_serp_preview']);
+
+            return;
+        }
+
+        parent::initialize($dc);
+    }
+
     /**
      * Get the table name
      *
