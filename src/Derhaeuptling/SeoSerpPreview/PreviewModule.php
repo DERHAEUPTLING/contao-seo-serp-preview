@@ -101,7 +101,7 @@ class PreviewModule extends BackendModule
         }
 
         Session::getInstance()->setData($session);
-        Controller::redirect('contao/main.php?do='.$module.$params.'&'.AbstractHandler::$serpParamName.'=1');
+        Controller::redirect('contao/main.php?do='.$module.$params.'&'.AbstractHandler::$serpTemporaryParamName.'=1');
     }
 
     /**

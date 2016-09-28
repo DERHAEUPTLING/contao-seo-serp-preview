@@ -59,6 +59,12 @@ abstract class AbstractHandler
     public static $serpParamName = 'serp_tests';
 
     /**
+     * Parameter name (temporary activation)
+     * @var string
+     */
+    public static $serpTemporaryParamName = 'serp_tests_tmp';
+
+    /**
      * Initialize the tests handler
      *
      * @param DataContainer|null $dc
@@ -77,7 +83,11 @@ abstract class AbstractHandler
             Input::get(self::$serpParamName) ? static::enable() : static::disable();
             Controller::redirect(
                 str_replace(
-                    '&'.self::$serpParamName.'='.Input::get(self::$serpParamName),
+                    [
+                        '&'.self::$serpParamName.'='.Input::get(self::$serpParamName),
+                        '&'.self::$serpTemporaryParamName.'='.Input::get(self::$serpTemporaryParamName),
+
+                    ],
                     '',
                     Environment::get('request')
                 )
@@ -155,6 +165,10 @@ abstract class AbstractHandler
      */
     protected function isEnabled()
     {
+        if (Input::get(static::$serpTemporaryParamName)) {
+            return true;
+        }
+
         return Session::getInstance()->get($this->sessionName.'_'.$this->table) ? true : false;
     }
 
