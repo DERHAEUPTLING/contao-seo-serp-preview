@@ -14,7 +14,9 @@
 /**
  * Register PSR-0 namespace
  */
-NamespaceClassLoader::add('Derhaeuptling\SeoSerpPreview', 'system/modules/seo_serp_preview/src');
+if (class_exists('NamespaceClassLoader')) {
+    NamespaceClassLoader::add('Derhaeuptling\SeoSerpPreview', 'system/modules/seo_serp_preview/src');
+}
 
 /**
  * Register the templates
