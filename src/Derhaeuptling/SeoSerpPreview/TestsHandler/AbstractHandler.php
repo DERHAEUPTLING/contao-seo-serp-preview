@@ -179,7 +179,7 @@ abstract class AbstractHandler
     {
         $GLOBALS['TL_DCA'][$this->table]['list']['sorting']['panelLayout']                           = 'serp_message_filter,'.$GLOBALS['TL_DCA'][$this->table]['list']['sorting']['panelLayout'];
         $GLOBALS['TL_DCA'][$this->table]['list']['sorting']['panel_callback']['serp_message_filter'] = [
-            static::class,
+            get_called_class(),
             'generateMessageFilter',
         ];
     }
@@ -304,13 +304,13 @@ abstract class AbstractHandler
         if ($GLOBALS['TL_DCA'][$this->table]['list']['sorting']['mode'] === 4) {
             $GLOBALS['TL_DCA'][$this->table]['list']['sorting']['default_child_record_callback'] = $GLOBALS['TL_DCA'][$this->table]['list']['sorting']['child_record_callback'];
             $GLOBALS['TL_DCA'][$this->table]['list']['sorting']['child_record_callback']         = [
-                static::class,
+                get_called_class(),
                 'generateLabel',
             ];
         } else {
             $GLOBALS['TL_DCA'][$this->table]['list']['label']['default_label_callback'] = $GLOBALS['TL_DCA'][$this->table]['list']['label']['label_callback'];
             $GLOBALS['TL_DCA'][$this->table]['list']['label']['label_callback']         = [
-                static::class,
+                get_called_class(),
                 'generateLabel',
             ];
         }
