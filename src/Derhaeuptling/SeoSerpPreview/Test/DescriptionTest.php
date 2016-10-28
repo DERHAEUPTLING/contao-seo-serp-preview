@@ -89,7 +89,7 @@ class DescriptionTest implements TestInterface
         }
 
         // The description is too long
-        if (strlen($value) > self::MAX_LENGTH) {
+        if (utf8_strlen($value) > self::MAX_LENGTH) {
             throw new WarningException(
                 sprintf(
                     $GLOBALS['TL_LANG']['SST']['test.description']['length'],
