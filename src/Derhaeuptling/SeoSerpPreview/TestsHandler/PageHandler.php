@@ -118,7 +118,9 @@ class PageHandler extends AbstractHandler
      */
     protected function getRecordIds()
     {
-        return Database::getInstance()->getChildRecords(Session::getInstance()->get('tl_page_node'), 'tl_page');
+        $pageNode = Session::getInstance()->get('tl_page_node');
+
+        return array_merge([$pageNode], Database::getInstance()->getChildRecords($pageNode, 'tl_page'));
     }
 
     /**
