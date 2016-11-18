@@ -124,6 +124,21 @@ class PageHandler extends AbstractHandler
     }
 
     /**
+     * Filter the records by message type
+     */
+    protected function filterRecords()
+    {
+        parent::filterRecords();
+        $pageNode = Session::getInstance()->get('tl_page_node');
+
+        // If there is a page node selected and there are no root IDs (e.g. due to filter settings),
+        // make sure that page node is displayed
+        if ($pageNode && $GLOBALS['TL_DCA'][$this->table]['list']['sorting']['root'] === [0]) {
+            $GLOBALS['TL_DCA'][$this->table]['list']['sorting']['root'] = [$pageNode];
+        }
+    }
+
+    /**
      * Get the global operation
      *
      * @param bool $enabled
