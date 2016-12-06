@@ -27,9 +27,11 @@ SeoSerpPreview.PageEngine = new Class({
             }.bind(this));
         }
 
-        this.robots.addEvent('change', function () {
-            this.fireEvent('change');
-        }.bind(this));
+        if (this.robots) {
+            this.robots.addEvent('change', function () {
+                this.fireEvent('change');
+            }.bind(this));
+        }
     },
 
     /**
@@ -78,6 +80,10 @@ SeoSerpPreview.PageEngine = new Class({
      * @returns {bool}
      */
     getIndex: function () {
+        if (!this.robots) {
+            return true;
+        }
+
         return this.robots.get('value').indexOf('noindex') === -1;
     }
 });
