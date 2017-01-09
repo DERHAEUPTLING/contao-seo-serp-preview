@@ -253,7 +253,7 @@ abstract class AbstractHandler
             return;
         }
 
-        $recordIds = $this->getRecordIds();
+        $recordIds = array_filter($this->getRecordIds());
 
         if (count($recordIds) === 0) {
             $recordIds = [0];
