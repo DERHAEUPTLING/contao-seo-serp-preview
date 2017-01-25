@@ -58,18 +58,22 @@ class ArticleHandler extends AbstractHandler
     }
 
     /**
-     * Add the message filter
-     */
-    protected function addMessageFilter()
-    {
-        // not supported
-    }
-
-    /**
      * Filter the records by message type
      */
     protected function filterRecords()
     {
-        // not supported
+        parent::filterRecords();
+
+        $articles = $GLOBALS['TL_DCA'][$this->table]['list']['sorting']['root'];
+
+        if (!is_array($articles) || count($articles) < 1) {
+            return;
+        }
+
+        $pids = Database::getInstance()->execute(
+            "SELECT pid FROM tl_article WHERE id IN (".implode(',', $articles).")"
+        );
+
+        $GLOBALS['TL_DCA']['tl_page']['list']['sorting']['root'] = $pids->numRows ? $pids->fetchEach('pid') : [0];
     }
 }
