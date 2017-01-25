@@ -70,10 +70,14 @@ class ArticleHandler extends AbstractHandler
             return;
         }
 
-        $pids = Database::getInstance()->execute(
-            "SELECT pid FROM tl_article WHERE id IN (".implode(',', $articles).")"
-        );
+        if ($articles === [0]) {
+            $root = [];
+        } else {
+            $root = Database::getInstance()->execute(
+                "SELECT pid FROM tl_article WHERE id IN (".implode(',', $articles).")"
+            )->fetchEach('pid');
+        }
 
-        $GLOBALS['TL_DCA']['tl_page']['list']['sorting']['root'] = $pids->numRows ? $pids->fetchEach('pid') : [0];
+        $GLOBALS['TL_DCA']['tl_page']['list']['sorting']['root'] = (count($root) === 0) ? [0] : $root;
     }
 }
