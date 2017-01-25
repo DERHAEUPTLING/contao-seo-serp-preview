@@ -35,7 +35,7 @@ class DescriptionTest implements TestInterface
      */
     public function supports($table)
     {
-        return in_array($table, ['tl_calendar_events', 'tl_news', 'tl_page'], true);
+        return in_array($table, ['tl_article', 'tl_calendar_events', 'tl_news', 'tl_page'], true);
     }
 
     /**
@@ -50,6 +50,7 @@ class DescriptionTest implements TestInterface
     public function run(array $data, $table)
     {
         switch ($table) {
+            case 'tl_article':
             case 'tl_calendar_events':
             case 'tl_news':
                 $this->check($data['teaser']);
