@@ -358,6 +358,11 @@ abstract class AbstractHandler
             $default = $callback($row, $label, $dc, $imageAttribute, $blnReturnImage, $blnProtected);
         }
 
+        // Do not check records outside the scope
+        if (!in_array($row['id'], $this->getRecordIds())) {
+            return $default;
+        }
+
         $template = new BackendTemplate('be_seo_serp_tests');
         $template->setData($this->generateTests($row));
         $template->label = $default;
