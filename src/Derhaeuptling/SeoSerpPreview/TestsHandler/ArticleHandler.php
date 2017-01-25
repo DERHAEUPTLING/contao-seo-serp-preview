@@ -56,4 +56,20 @@ class ArticleHandler extends AbstractHandler
     {
         return Database::getInstance()->execute("SELECT id FROM tl_article WHERE showTeaser!=''")->fetchEach('id');
     }
+
+    /**
+     * Add the message filter
+     */
+    protected function addMessageFilter()
+    {
+        // not supported
+    }
+
+    /**
+     * Filter the records by message type
+     */
+    protected function filterRecords()
+    {
+        // not supported
+    }
 }
