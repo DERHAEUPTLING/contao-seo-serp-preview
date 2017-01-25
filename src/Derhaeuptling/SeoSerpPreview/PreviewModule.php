@@ -39,7 +39,7 @@ class PreviewModule extends BackendModule
      * Tables to be analyzed
      * @var array
      */
-    protected $tables = ['tl_calendar_events', 'tl_news', 'tl_page'];
+    protected $tables = ['tl_article', 'tl_calendar_events', 'tl_news', 'tl_page'];
 
     /**
      * Redirect URL param name
@@ -167,13 +167,36 @@ class PreviewModule extends BackendModule
         $return = [];
 
         switch ($table) {
+            case 'tl_article':
+                $articles = $db->execute("SELECT * FROM tl_article WHERE showTeaser!='' ORDER BY title");
+
+                while ($articles->next()) {
+                    $test = $this->runTests($table, [$articles->row()]);
+
+                    $return[] = [
+                        'url'       => sprintf(
+                            'contao/main.php?do=article&act=edit&id=%s&rt=%s&ref=%s',
+                            $articles->id,
+                            REQUEST_TOKEN,
+                            TL_REFERER_ID
+                        ),
+                        'reference' => $articles->title,
+                        'message'   => $this->generateTestMessage($test),
+                        'result'    => $test,
+                        'hasAccess' => true,
+                    ];
+                }
+                break;
+
             case 'tl_calendar_events':
                 $calendars = $db->execute("SELECT id, title FROM tl_calendar WHERE seo_serp_ignore='' ORDER BY title");
 
                 while ($calendars->next()) {
                     $test = $this->runTests(
                         $table,
-                        $db->prepare("SELECT * FROM tl_calendar_events WHERE pid=?")->execute($calendars->id)
+                        $db->prepare("SELECT * FROM tl_calendar_events WHERE pid=?")
+                            ->execute($calendars->id)
+                            ->fetchAllAssoc()
                     );
 
                     $return[] = [
@@ -201,7 +224,7 @@ class PreviewModule extends BackendModule
                 while ($archives->next()) {
                     $test = $this->runTests(
                         $table,
-                        $db->prepare("SELECT * FROM tl_news WHERE pid=?")->execute($archives->id)
+                        $db->prepare("SELECT * FROM tl_news WHERE pid=?")->execute($archives->id)->fetchAllAssoc()
                     );
 
                     $return[] = [
@@ -230,7 +253,7 @@ class PreviewModule extends BackendModule
 
                     if ($pages->numRows) {
                         $notes = [];
-                        $test  = $this->runTests($table, $pages->reset());
+                        $test  = $this->runTests($table, $pages->fetchAllAssoc());
 
                         // Add the note if the user is not admin and there are some errors or warnings
                         if (!$user->isAdmin && ($test['errors'] > 0 || $test['warnings'] > 0)) {
@@ -329,11 +352,11 @@ class PreviewModule extends BackendModule
      * Run the tests on a table
      *
      * @param string $table
-     * @param Result $records
+     * @param array  $records
      *
      * @return array
      */
-    protected function runTests($table, Result $records)
+    protected function runTests($table, array $records)
     {
         System::loadLanguageFile('seo_serp_tests');
         $result = ['errors' => 0, 'warnings' => 0];
@@ -345,17 +368,15 @@ class PreviewModule extends BackendModule
                 continue;
             }
 
-            while ($records->next()) {
+            foreach ($records as $record) {
                 try {
-                    $test->run($records->row(), $table);
+                    $test->run($record, $table);
                 } catch (ErrorException $e) {
                     $result['errors']++;
                 } catch (WarningException $e) {
                     $result['warnings']++;
                 }
             }
-
-            $records->reset();
         }
 
         return $result;
