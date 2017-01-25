@@ -46,4 +46,11 @@ interface EngineInterface
      * @return string
      */
     public function getPageTitle($id);
+
+    /**
+     * Get the message that will be displayed if record is not indexed
+     *
+     * @return string
+     */
+    public function getNotIndexedMessage();
 }

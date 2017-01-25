@@ -21,6 +21,16 @@ use Contao\PageModel;
 abstract class AbstractEngine
 {
     /**
+     * Get the message that will be displayed if record is not indexed
+     *
+     * @return string
+     */
+    public function getNotIndexedMessage()
+    {
+        return $GLOBALS['TL_LANG']['MSC']['seo_serp_preview.pageNotIndexed'];
+    }
+
+    /**
      * Generate the URL path
      *
      * @param PageModel $pageModel
