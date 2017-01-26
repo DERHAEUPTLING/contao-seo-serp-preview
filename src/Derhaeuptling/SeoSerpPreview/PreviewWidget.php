@@ -120,16 +120,6 @@ class PreviewWidget extends \Widget
     }
 
     /**
-     * Get the message that will be displayed if record is not indexed
-     *
-     * @return string
-     */
-    public function getNotIndexedMessage()
-    {
-        return $this->engine->getNotIndexedMessage();
-    }
-
-    /**
      * Generate the widget and return it as string
      *
      * @return string

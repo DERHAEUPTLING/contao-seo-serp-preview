@@ -30,7 +30,7 @@ $GLOBALS['TL_JAVASCRIPT'][] = $this->getJavaScriptEngineSource();
     </div>
 
     <div class="preview-index">
-        <div class="tl_info"><?= $this->getNotIndexedMessage() ?></div>
+        <div class="tl_info"><?= $GLOBALS['TL_LANG']['MSC']['seo_serp_preview.notIndexed'] ?></div>
     </div>
 </div>
 
