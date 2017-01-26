@@ -79,6 +79,12 @@ var SeoSerpPreview = new Class({
      * Refresh the preview state
      */
     refresh: function () {
+        if (!this.engine.showElement()) {
+            this.el.hide();
+            this.descriptionCounter.hide();
+            return;
+        }
+
         var data = this.collectData();
 
         this.updateDescriptionCounter(data.description);
@@ -90,6 +96,10 @@ var SeoSerpPreview = new Class({
 
         this.renderData(data);
         this.showBody();
+
+        // Show element if it was hidden
+        this.el.show();
+        this.descriptionCounter.show();
     },
 
     /**

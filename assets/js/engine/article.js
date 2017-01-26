@@ -58,6 +58,15 @@ SeoSerpPreview.ArticleEngine = new Class({
     },
 
     /**
+     * Return true to show the element
+     *
+     * @return {boolean}
+     */
+    showElement: function() {
+        return !!this.showTeaser.checked;
+    },
+
+    /**
      * Add the description character counter
      *
      * @param {object} el
@@ -93,18 +102,5 @@ SeoSerpPreview.ArticleEngine = new Class({
      */
     getDescription: function () {
         return this.description.tinymce.getContent({ format: 'text' });
-    },
-
-    /**
-     * Get the index (true if the page is indexed, false otherwise)
-     *
-     * @returns {bool}
-     */
-    getIndex: function () {
-        if (!this.showTeaser) {
-            return true;
-        }
-
-        return this.showTeaser.checked ? true : false;
     }
 });

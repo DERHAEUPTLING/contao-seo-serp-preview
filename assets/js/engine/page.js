@@ -35,6 +35,15 @@ SeoSerpPreview.PageEngine = new Class({
     },
 
     /**
+     * Return true to show the element
+     *
+     * @return {boolean}
+     */
+    showElement: function() {
+        return true;
+    },
+
+    /**
      * Add the description character counter
      *
      * @param {object} el
