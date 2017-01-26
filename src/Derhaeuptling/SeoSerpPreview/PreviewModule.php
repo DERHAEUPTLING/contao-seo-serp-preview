@@ -168,24 +168,17 @@ class PreviewModule extends BackendModule
 
         switch ($table) {
             case 'tl_article':
-                $articles = $db->execute("SELECT * FROM tl_article WHERE showTeaser!='' ORDER BY title");
+                $test = $this->runTests(
+                    $table,
+                    $db->execute("SELECT * FROM tl_article WHERE showTeaser!='' ORDER BY title")->fetchAllAssoc()
+                );
 
-                while ($articles->next()) {
-                    $test = $this->runTests($table, [$articles->row()]);
-
-                    $return[] = [
-                        'url'       => sprintf(
-                            'contao/main.php?do=article&act=edit&id=%s&rt=%s&ref=%s',
-                            $articles->id,
-                            REQUEST_TOKEN,
-                            TL_REFERER_ID
-                        ),
-                        'reference' => $articles->title,
-                        'message'   => $this->generateTestMessage($test),
-                        'result'    => $test,
-                        'hasAccess' => true,
-                    ];
-                }
+                $return[] = [
+                    'url'       => Backend::addToUrl($this->redirectParamName.'='.$module),
+                    'message'   => $this->generateTestMessage($test),
+                    'result'    => $test,
+                    'hasAccess' => true,
+                ];
                 break;
 
             case 'tl_calendar_events':
