@@ -39,5 +39,9 @@ $GLOBALS['TL_DCA']['tl_article']['palettes']['default'] = str_replace(
 $GLOBALS['TL_DCA']['tl_article']['fields']['seo_serp_preview'] = [
     'exclude'   => true,
     'inputType' => 'seoSerpPreview',
-    'eval'      => ['engine' => 'Derhaeuptling\SeoSerpPreview\Engine\ArticleEngine', 'tl_class' => 'clr'],
+    'eval'      => [
+        'engine'   => 'Derhaeuptling\SeoSerpPreview\Engine\ArticleEngine',
+        'hidden'   => true,
+        'tl_class' => 'clr',
+    ],
 ];

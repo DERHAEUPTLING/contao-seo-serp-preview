@@ -4,7 +4,7 @@ $GLOBALS['TL_JAVASCRIPT'][] = 'system/modules/seo_serp_preview/assets/js/preview
 $GLOBALS['TL_JAVASCRIPT'][] = $this->getJavaScriptEngineSource();
 ?>
 
-<div id="<?= $this->id ?>-widget" class="seo-serp-preview">
+<div id="<?= $this->id ?>-widget" class="seo-serp-preview"<?php if ($this->hidden): ?> style="display:none;"<?php endif; ?>>
     <div class="preview-header">
         <a href="https://www.google.com" target="_blank">
             <img src="system/modules/seo_serp_preview/assets/images/google.png" width="180" height="61" alt="google">
@@ -36,6 +36,9 @@ $GLOBALS['TL_JAVASCRIPT'][] = $this->getJavaScriptEngineSource();
 
 <script>
     window.addEvent('domready', function () {
-        new SeoSerpPreview(document.id('<?= $this->id ?>-widget'), new <?= $this->getJavaScriptEngineName() ?>(), {titleFormat: '<?= $this->getPageTitle() ?>'});
+        new SeoSerpPreview(document.id('<?= $this->id ?>-widget'), new <?= $this->getJavaScriptEngineName() ?>(), {
+            hidden: <?= $this->hidden ? 'true' : 'false' ?>,
+            titleFormat: '<?= $this->getPageTitle() ?>'
+        });
     });
 </script>

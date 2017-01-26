@@ -5,6 +5,7 @@ var SeoSerpPreview = new Class({
      * Default options
      */
     options: {
+        'hidden': false,
         'bodySelector': '.preview-body',
         'hintSelector': '.preview-hint',
         'indexSelector': '.preview-index',
@@ -37,7 +38,7 @@ var SeoSerpPreview = new Class({
         this.collectElements();
 
         // Wait until the engine is ready
-        this.engine.addEvent('ready', function (){
+        this.engine.addEvent('ready', function () {
             // Add the description character counter
             this.addDescriptionCounter();
 
@@ -79,7 +80,7 @@ var SeoSerpPreview = new Class({
      * Refresh the preview state
      */
     refresh: function () {
-        if (!this.engine.showElement()) {
+        if (this.options.hidden && this.engine.showElement && !this.engine.showElement()) {
             this.el.hide();
             this.descriptionCounter.hide();
             return;
@@ -98,8 +99,10 @@ var SeoSerpPreview = new Class({
         this.showBody();
 
         // Show element if it was hidden
-        this.el.show();
-        this.descriptionCounter.show();
+        if (this.options.hidden) {
+            this.el.show();
+            this.descriptionCounter.show();
+        }
     },
 
     /**
@@ -206,7 +209,7 @@ var SeoSerpPreview = new Class({
      * @param {string} text
      * @param {object} el
      */
-    generateTextElements: function(text, el) {
+    generateTextElements: function (text, el) {
         var rgxp = new RegExp(/\,|\.|\;|\!|\?|\-|\s|\\|\//);
         var word = [];
 
@@ -244,7 +247,7 @@ var SeoSerpPreview = new Class({
      * @param {string} text
      * @param {object} el
      */
-    createTextElement: function(text, el) {
+    createTextElement: function (text, el) {
         var self = this;
         var span = new Element('span', {'text': text});
 
