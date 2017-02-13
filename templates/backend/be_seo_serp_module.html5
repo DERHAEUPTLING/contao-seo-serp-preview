@@ -4,7 +4,7 @@
 
 <h2 class="sub_headline"><?= $GLOBALS['TL_LANG']['MSC']['seo_serp_module.headline'] ?></h2>
 
-<div class="tl_formbody_edit seo-serp-module">
+<div class="tl_formbody_edit seo-serp-module widget">
     <?php if ($this->modules): ?>
         <div class="modules">
             <?php foreach ($this->modules as $module): ?>
