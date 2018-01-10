@@ -24,7 +24,7 @@ use Derhaeuptling\SeoSerpPreview\Test\Exception\WarningException;
  */
 class DescriptionTest implements TestInterface
 {
-    const MAX_LENGTH = 156;
+    const MAX_LENGTH = 320;
 
     /**
      * Return true if the test supports table

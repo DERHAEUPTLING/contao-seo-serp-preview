@@ -17,7 +17,7 @@ var SeoSerpPreview = new Class({
         'counterLimitClass': 'limit-exceeded',
         'noIndexClass': 'no-index',
         'titleLimit': 70,
-        'descriptionLimit': 156,
+        'descriptionLimit': 320,
         'keywordCharacterLength': 4,
         'titleFormat': '##title##'
     },
