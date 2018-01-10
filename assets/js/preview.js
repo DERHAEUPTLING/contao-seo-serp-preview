@@ -172,6 +172,11 @@ var SeoSerpPreview = new Class({
      * @param {string} value
      */
     setTitle: function (value) {
+        // Strip the HTML tags
+        var tmp = document.createElement('div');
+        tmp.innerHTML = value;
+        value = tmp.textContent;
+
         value = this.options.titleFormat.replace('##title##', value);
 
         if (value.length > this.options.titleLimit) {
