@@ -60,7 +60,7 @@ class PageEngine extends AbstractEngine implements EngineInterface
             return '';
         }
 
-        return ($rootModel->rootUseSSL ? 'https://' : 'http://').($rootModel->domain ?: Environment::get('host')).TL_PATH.'/';
+        return ($rootModel->rootUseSSL ? 'https://' : 'http://').($rootModel->dns ?: Environment::get('host')).TL_PATH.'/';
     }
 
     /**
