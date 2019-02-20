@@ -19,7 +19,15 @@ var SeoSerpPreview = new Class({
         'titleLimit': 70,
         'descriptionLimit': 320,
         'keywordCharacterLength': 4,
-        'titleFormat': '##title##'
+        'titleFormat': '##title##',
+        'entitiesMapper': {
+            '[&]': '&amp;',
+            '[&amp;]': '&amp;',
+            '[lt]': '&lt;',
+            '[gt]': '&gt;',
+            '[nbsp]': '&nbsp;',
+            '[-]': '&shy;',
+        }
     },
 
     /**
@@ -124,11 +132,26 @@ var SeoSerpPreview = new Class({
      */
     collectData: function () {
         return data = {
-            'title': this.engine.getTitle(),
+            'title': this.restoreEntities(this.engine.getTitle()),
             'url': this.engine.getUrl(),
-            'description': this.engine.getDescription(),
+            'description': this.restoreEntities(this.engine.getDescription()),
             'index': this.engine.getIndex ? this.engine.getIndex() : true
         };
+    },
+
+    /**
+     * Restore the entities
+     *
+     * @param {string} value
+     *
+     * @returns {string}
+     */
+    restoreEntities: function (value) {
+        for (var key in this.options.entitiesMapper) {
+            value = value.replace(key, this.options.entitiesMapper[key]);
+        }
+
+        return value;
     },
 
     /**
