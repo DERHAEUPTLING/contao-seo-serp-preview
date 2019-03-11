@@ -148,7 +148,9 @@ var SeoSerpPreview = new Class({
      */
     restoreEntities: function (value) {
         for (var key in this.options.entitiesMapper) {
-            value = value.replace(key, this.options.entitiesMapper[key]);
+            // Create the RegExp from escaped string and replace the value
+            // @see https://stackoverflow.com/a/3561711/3628692
+            value = value.replace(new RegExp(key.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), this.options.entitiesMapper[key]);
         }
 
         return value;
@@ -224,6 +226,11 @@ var SeoSerpPreview = new Class({
      * @param {string} value
      */
     setDescription: function (value) {
+        // Strip the HTML tags
+        var tmp = document.createElement('div');
+        tmp.innerHTML = value;
+        value = tmp.textContent;
+
         if (value.length > this.options.descriptionLimit) {
             value = value.substr(0, this.options.descriptionLimit) + '...';
         }
