@@ -1,6 +1,8 @@
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
 # DEPRECATED
 
 As of Contao 4.9 integrates the important parts of this plugin, this plugin is now deprecated.
+
 
 # Contao SEO SERP Preview
 
