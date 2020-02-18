@@ -1,3 +1,7 @@
+# DEPRECATED
+
+As of Contao 4.9 integrates the important parts of this plugin, this plugin is now deprecated.
+
 # Contao SEO SERP Preview
 
 Shows a preview of how <b>pages</b>, <b>news</b>, <b>events</b> and <b>Article Teaser</b> if enabled will look like in search engines. <br>
